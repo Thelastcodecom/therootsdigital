@@ -34,11 +34,15 @@ export default function PortfolioGrid() {
       { type: "image", src: "/images/portfolio-images/web/web 2.webp" },
       { type: "image", src: "/images/portfolio-images/web/web 3.webp" },
       { type: "image", src: "/images/portfolio-images/web/web 4.webp" },
+      { type: "image", src: "/images/portfolio-images/web/web 5.png" },
+      { type: "image", src: "/images/portfolio-images/web/web 6.png" },
+      { type: "image", src: "/images/portfolio-images/web/web 7.png" },
+      { type: "image", src: "/images/portfolio-images/web/web 8.png" },
     ],
     "Video Editing": [
       {
         type: "video",
-        src: "/images/portfolio-images/video-editing/video 1.mp4", // Replace with your local video path e.g., /videos/edit1.mp4
+        src: "/images/portfolio-images/video-editing/video 1.mp4",
       },
       {
         type: "video",
@@ -46,21 +50,29 @@ export default function PortfolioGrid() {
       },
       {
         type: "video",
-        src: "/images/portfolio-images/video-editing/video 3.mp4", // Replace with your local video path e.g., /videos/edit1.mp4
+        src: "/images/portfolio-images/video-editing/video 3.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 4.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 5.mp4",
       },
     ],
     "Video Animation": [
       {
         type: "video",
-        src: "/images/portfolio-images/video-animation/animation 1.mp4", // Replace with your local video path e.g., /videos/edit1.mp4
+        src: "/images/portfolio-images/video-animation/animation 1.mp4",
       },
       {
         type: "video",
-        src: "/images/portfolio-images/video-animation/animation 2.mp4", // Replace with your local video path e.g., /videos/edit1.mp4
+        src: "/images/portfolio-images/video-animation/animation 2.mp4",
       },
       {
         type: "video",
-        src: "/images/portfolio-images/video-animation/animation 3.mp4", // Replace with your local video path e.g., /videos/edit1.mp4
+        src: "/images/portfolio-images/video-animation/animation 3.mp4",
       },
     ],
     Branding: [
@@ -186,7 +198,7 @@ function PortfolioCard({
   // 1. WEB DESIGN CARD (Long scrolling screenshot)
   if (category === "Web Design" || category === "Social Media Management") {
     return (
-      <div className="group relative w-full h-[400px] md:h-[550px] rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
+      <div className="group relative w-full h-[400px] md:h-[550px] rounded-2xl overflow-hidden border border-2 border-lime-accent bg-zinc-900">
         <div className="absolute inset-0 overflow-hidden">
           {item.type === "video" ? (
             // If someone puts a video in Web Design, render video without controls, always playing

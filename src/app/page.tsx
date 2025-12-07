@@ -6,6 +6,8 @@ import LaunchProcessAndMarquee from "@/components/LaunchProcess";
 import PortfolioGrid from "@/components/PortfolioShowcaseSection";
 import ScrollRevealSection from "@/components/ScrollRevealSection";
 import TestimonialsSection from "@/components/TestimonialSection";
+import SubscriptionsSection from "@/components/SubscriptionsSection";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -17,7 +19,9 @@ export default function Home() {
       <ScrollRevealSection />
       <LaunchProcessAndMarquee />
       <ClientFeedback />
-      <TestimonialsSection/>
+      <TestimonialsSection />
+      <SubscriptionsSection />
+      <Footer />
     </>
   );
 }

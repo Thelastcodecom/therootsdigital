@@ -1,372 +1,342 @@
-//@ts-nocheck
 "use client";
-import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
 
-// Testimonial data
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    rating: 5,
-    text: "I was impressed how smooth the whole process was with them. They have been proactive to resolve my concerns in a timely manner.",
-    company: "Design Studio",
-  },
-  {
-    id: 2,
-    name: "Mark Thompson",
-    rating: 4,
-    text: "Their attention to detail exceeded my expectations. The final product was delivered ahead of schedule and looked better than I imagined.",
-    company: "Tech Innovations",
-  },
-  {
-    id: 3,
-    name: "Amanda Lee",
-    rating: 5,
-    text: "Working with this team was a breath of fresh air. They listened carefully to what I needed and delivered exactly that.",
-    company: "Marketing Agency",
-  },
-  {
-    id: 4,
-    name: "Robert Chen",
-    rating: 5,
-    text: "The communication throughout the project was excellent. I always knew what stage we were at and what was coming next.",
-    company: "Finance Consultants",
-  },
-  {
-    id: 5,
-    name: "Elena Rodriguez",
-    rating: 4,
-    text: "They managed to transform our outdated website into something modern and functional while maintaining our brand identity.",
-    company: "Retail Business",
-  },
-  {
-    id: 6,
-    name: "David Wright",
-    rating: 5,
-    text: "The support after launch has been outstanding. Any minor adjustments needed were handled quickly and efficiently.",
-    company: "Healthcare Services",
-  },
-];
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 
-const TestimonialsSection = () => {
-  const [activeTestimonial, setActiveTestimonial] = useState(testimonials[0]);
-  const scrollRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
-  const [textKey, setTextKey] = useState(0);
-  const sectionRef = useRef(null);
+const TestimonialSection = () => {
+  const testimonials = [
+    {
+      id: 1,
+      text: "The Roots Digital went above and beyond in creating my animation project...",
+      author: "Kayden Gauthier",
+      stars: 5,
+    },
+    {
+      id: 2,
+      text: "The team handled my Shopify project with professionalism and delivered...",
+      author: "Sofia Mooree",
+      stars: 5,
+    },
+    {
+      id: 3,
+      text: "I needed animated content for my business and The Roots Digital...",
+      author: "Hedda Martin",
+      stars: 5,
+    },
+    {
+      id: 4,
+      text: "I wanted a customized Shopify store and The Roots Digital exceeded my expectations...",
+      author: "James",
+      stars: 5,
+    },
+    {
+      id: 5,
+      text: "Working with The Roots Digital was a fantastic experience. They Paid....",
+      author: "Easton Hammond",
+      stars: 5,
+    },
+    {
+      id: 6,
+      text: "The animation project turned out better than I imagined. The Roots Digital...",
+      author: "Max Cook",
+      stars: 5,
+    },
+    {
+      id: 7,
+      text: "The Roots Digital built my Shopify store flawlessly. Everything from...",
+      author: "Robert Watson",
+      stars: 5,
+    },
+    {
+      id: 8,
+      text: "I was impressed with how smooth the whole process was....",
+      author: "Edward",
+      stars: 5,
+    },
+    {
+      id: 9,
+      text: "The Roots Digital created a stunning and professional website...",
+      author: "Grant Davidson",
+      stars: 5,
+    },
+    {
+      id: 10,
+      text: "I had a great experience with my logo creation. Mike Marshall was...",
+      author: "Derek",
+      stars: 5,
+    },
+    {
+      id: 11,
+      text: "We had a great experience working with therootsdigital on our...",
+      author: "Spirit Talks",
+      stars: 5,
+    },
+    {
+      id: 12,
+      text: "I recently contacted the team to build my practice website and was...",
+      author: "Sound Health Practice LLC.",
+      stars: 5,
+    },
+    {
+      id: 13,
+      text: "I recently had the pleasure of working with this fantastic company...",
+      author: "Grey _Zone",
+      stars: 5,
+    },
+    {
+      id: 14,
+      text: "Thank you for the amazing work on our logo. You perfectly captured...",
+      author: "SalcedocleaningservicesLlc",
+      stars: 5,
+    },
+  ];
 
-  // Intersection Observer for section visibility
+  const totalSlides = testimonials.length;
+  const cloneCount = 5; // Number of clones on each side for smooth infinite loop
+
+  // Create extended array with clones for infinite effect
+  const extendedTestimonials = [
+    ...testimonials.slice(-cloneCount),
+    ...testimonials,
+    ...testimonials.slice(0, cloneCount),
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const sliderRef = useRef(null);
+  const cardWidth = 272; // w-64 (256px) + mx-2 (16px margins)
+
+  // The position in extended array (offset by cloneCount)
+  const extendedIndex = activeIndex + cloneCount;
+
+  // Update container width on mount and resize
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
-    );
+    const updateWidth = () => {
+      if (sliderRef.current) {
+        setContainerWidth(sliderRef.current.offsetWidth);
+      }
+    };
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // Update text key when testimonial changes for animation reset
-  useEffect(() => {
-    setTextKey((prev) => prev + 1);
-  }, [activeTestimonial]);
+  // Calculate transform to center the active card
+  const getTransformValue = useCallback(() => {
+    const centerOffset = containerWidth / 2 - cardWidth / 2;
+    const slideOffset = extendedIndex * cardWidth;
+    return centerOffset - slideOffset;
+  }, [containerWidth, extendedIndex]);
 
-  // Function to render star ratings
-  const renderStars = (rating, animated = false) => {
-    return (
-      <div className="flex">
-        {[...Array(5)].map((_, i) => (
-          <svg
-            key={i}
-            className={`w-4 h-4 star-icon ${
-              i < rating ? "text-lime-400" : "text-gray-600"
-            } ${animated ? "star-animate" : ""}`}
-            style={animated ? { animationDelay: `${i * 100}ms` } : {}}
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-        ))}
-      </div>
-    );
-  };
-
-  // Scroll to card function
-  const scrollToCard = (id) => {
-    const cardElement = document.getElementById(`card-${id}`);
-    if (cardElement && scrollRef.current) {
-      scrollRef.current.scrollTo({
-        left: cardElement.offsetLeft - 20,
-        behavior: "smooth",
-      });
+  // Handle infinite loop - jump without animation when reaching clones
+  const handleTransitionEnd = useCallback(() => {
+    if (activeIndex >= totalSlides) {
+      setIsTransitioning(false);
+      setActiveIndex(0);
+    } else if (activeIndex < 0) {
+      setIsTransitioning(false);
+      setActiveIndex(totalSlides - 1);
     }
-  };
+  }, [activeIndex, totalSlides]);
 
-  // Auto-scroll functionality
+  // Re-enable transition after instant jump
   useEffect(() => {
-    if (!autoScrollEnabled || isHovering) return;
+    if (!isTransitioning) {
+      const timer = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsTransitioning(true);
+        });
+      });
+      return () => cancelAnimationFrame(timer);
+    }
+  }, [isTransitioning]);
 
+  // Auto-slide every 4 seconds
+  useEffect(() => {
     const interval = setInterval(() => {
-      const currentIndex = testimonials.findIndex(
-        (t) => t.id === activeTestimonial.id
-      );
-      const nextIndex = (currentIndex + 1) % testimonials.length;
-      const nextTestimonial = testimonials[nextIndex];
-
-      setActiveTestimonial(nextTestimonial);
-      scrollToCard(nextTestimonial.id);
-    }, 5000);
+      setActiveIndex((prev) => prev + 1);
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, [activeTestimonial, isHovering, autoScrollEnabled]);
+  }, []);
 
-  // Manual navigation functions
-  const scrollLeft = () => {
-    const currentIndex = testimonials.findIndex(
-      (t) => t.id === activeTestimonial.id
-    );
-    const prevIndex =
-      currentIndex === 0 ? testimonials.length - 1 : currentIndex - 1;
-    const prevTestimonial = testimonials[prevIndex];
-
-    setActiveTestimonial(prevTestimonial);
-    scrollToCard(prevTestimonial.id);
+  const handlePrev = () => {
+    setActiveIndex((prev) => prev - 1);
   };
 
-  const scrollRight = () => {
-    const currentIndex = testimonials.findIndex(
-      (t) => t.id === activeTestimonial.id
-    );
-    const nextIndex = (currentIndex + 1) % testimonials.length;
-    const nextTestimonial = testimonials[nextIndex];
-
-    setActiveTestimonial(nextTestimonial);
-    scrollToCard(nextTestimonial.id);
+  const handleNext = () => {
+    setActiveIndex((prev) => prev + 1);
   };
+
+  const handleDotClick = (index) => {
+    setActiveIndex(index);
+  };
+
+  // Get the real index for dot highlighting (handles negative and overflow)
+  const getRealIndex = () => {
+    if (activeIndex < 0) return totalSlides + activeIndex;
+    if (activeIndex >= totalSlides) return activeIndex - totalSlides;
+    return activeIndex;
+  };
+
+  const StarRating = ({ count }) => (
+    <div className="flex space-x-0.5">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star
+          key={i}
+          className={`w-4 h-4 transition duration-300 ${
+            i < count ? "text-lime-400 fill-lime-400" : "text-gray-600"
+          }`}
+        />
+      ))}
+    </div>
+  );
+
+  const TestimonialCard = ({ item, isActive }) => (
+    <div
+      className={`flex-shrink-0 w-64 p-4 mx-2 rounded-lg backdrop-blur-sm shadow-2xl 
+        transition-all duration-500 ease-out cursor-pointer
+        ${
+          isActive
+            ? "bg-zinc-800 border-2 border-lime-400 scale-105 shadow-lime-400/30"
+            : "bg-zinc-800/50 border border-lime-400/30 scale-95 opacity-70 hover:opacity-90"
+        }`}
+    >
+      <StarRating count={item.stars} />
+      <p className="mt-2 text-xs text-gray-300 line-clamp-4">{item.text}</p>
+      <p className="mt-3 text-sm font-semibold text-white">{item.author}</p>
+      <p className="text-xs text-gray-400">Client</p>
+    </div>
+  );
 
   return (
-    <section className="bg-black pb-10" ref={sectionRef}>
-      <div className="container mx-auto px-4">
-        {/* Banner section with lime accent */}
+    <section className="w-full min-h-[80vh] bg-zinc-900 overflow-hidden">
+      <div className="container mx-auto px-4 md:px-8 py-16 md:py-24">
+        {/* TOP SECTION */}
         <div
-          className={`testimonial-banner mb-12 rounded-lg p-6 border border-lime-400/30 relative overflow-hidden ${
-            isVisible ? "fade-in-up" : "opacity-0"
-          }`}
-          style={{
-            background:
-              "linear-gradient(to right, rgba(132,204,22,0.2), rgba(163,230,53,0.3), rgba(132,204,22,0.2))",
-          }}
+          className="relative p-8 md:p-12 lg:p-20 rounded-xl overflow-hidden
+             bg-gradient-to-r from-lime-400/60 to-zinc-900/95 
+             shadow-2xl shadow-lime-400/20"
         >
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-0 bg-lime-300 blur-3xl rounded-full -right-20 -top-20 w-1/2 h-1/2 opacity-20 blob-float"></div>
-            <div className="absolute inset-0 bg-lime-500 blur-3xl rounded-full -left-20 -bottom-20 w-1/2 h-1/2 opacity-20 blob-float-delayed"></div>
-          </div>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-l from-zinc-900 to-transparent z-0"></div>
 
-          {/* Shimmer effect */}
-          <div className="shimmer-overlay"></div>
+          {/* CONTENT */}
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            {/* LEFT — Trustpilot Image */}
+            <div className="flex justify-center lg:justify-start w-full lg:w-1/3 mb-10 lg:mb-0">
+              <img
+                src="/images/testimonial/trustpilot.webp"
+                alt="Trustpilot"
+                className="w-40 md:w-52 lg:w-64 object-contain"
+              />
+            </div>
 
-          <div className="flex flex-col md:flex-row gap-8 items-center relative z-10">
-            {/* Left - Logo */}
-            <div
-              className={`logo-container p-4 rounded-lg border border-lime-400/20 shadow-xl min-w-[180px] flex items-center justify-center ${
-                isVisible ? "fade-in-left" : "opacity-0"
-              }`}
-            >
-              <div className="w-36 h-36 relative bg-gradient-to-br from-lime-500/30 to-lime-800/30 rounded-full flex items-center justify-center border-2 border-lime-400/50 pulse-slow">
-                <Image
-                  src={"/images/Trust Pilot.webp"}
-                  fill
-                  alt="Trust Pilot"
+            {/* RIGHT — Quote + Rating */}
+            <div className="text-center lg:text-left w-full lg:w-2/3">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight max-w-3xl">
+                I was impressed how smooth the whole process was with them. They
+                have been proactive to resolve my concerns in a timely manner.
+              </h2>
+
+              <div className="mt-8 text-white">
+                <p className="text-base font-semibold">
+                  Source: Every TRD Customer
+                </p>
+                <p className="text-xl font-bold mt-1">Rated 4.8 Excellent</p>
+                <img
+                  src="/images/testimonial/stars.png"
+                  alt="stars"
+                  className="w-40 md:w-48 mt-2"
                 />
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Right - Featured Testimonial */}
+        {/* SLIDER SECTION */}
+        <div className="mt-12 md:mt-16 relative">
+          {/* Navigation Arrows */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"
+            aria-label="Previous testimonial"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <button
+            onClick={handleNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"
+            aria-label="Next testimonial"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* Slider Container */}
+          <div ref={sliderRef} className="overflow-hidden mx-8 md:mx-12">
+            {/* Gradient Masks */}
+            <div className="absolute left-8 md:left-12 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-zinc-900 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-8 md:right-12 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-zinc-900 to-transparent z-10 pointer-events-none"></div>
+
+            {/* Cards Track */}
             <div
-              className={`flex-1 flex flex-col items-center md:items-start ${
-                isVisible ? "fade-in-right" : "opacity-0"
+              className={`flex py-4 ${
+                isTransitioning
+                  ? "transition-transform duration-500 ease-out"
+                  : ""
               }`}
+              style={{
+                transform: `translateX(${getTransformValue()}px)`,
+              }}
+              onTransitionEnd={handleTransitionEnd}
             >
-              {/* Stars with animation */}
-              <div key={`stars-${textKey}`} className="stars-container">
-                {renderStars(activeTestimonial.rating, true)}
-              </div>
+              {extendedTestimonials.map((item, index) => {
+                // Determine if this card should appear active
+                const isActive = index === extendedIndex;
 
-              {/* Animated testimonial text */}
-              <p
-                key={`text-${textKey}`}
-                className="testimonial-text mt-4 text-xl md:text-2xl text-white font-light leading-relaxed italic"
-              >
-                "{activeTestimonial.text}"
-              </p>
-
-              {/* Name with slide animation */}
-              <div
-                key={`name-${textKey}`}
-                className="author-info mt-4 slide-up-delayed"
-              >
-                <p className="text-lime-400 font-medium author-name">
-                  {activeTestimonial.name}
-                </p>
-                <p className="text-gray-300 text-sm company-name">
-                  {activeTestimonial.company}
-                </p>
-              </div>
-
-              <div className="source-badge mt-4 bg-black/60 backdrop-blur-sm py-1 px-3 rounded-full border border-lime-400/20 text-gray-200 text-xs">
-                <span className="badge-text">
-                  Source: Every TRD Customer · Rated 4.8 Excellent
-                </span>
-              </div>
+                return (
+                  <div
+                    key={`${item.id}-${index}`}
+                    onClick={() => {
+                      // Calculate the real index from the extended index
+                      const clickedRealIndex = index - cloneCount;
+                      if (
+                        clickedRealIndex >= 0 &&
+                        clickedRealIndex < totalSlides
+                      ) {
+                        setActiveIndex(clickedRealIndex);
+                      }
+                    }}
+                  >
+                    <TestimonialCard item={item} isActive={isActive} />
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
 
-        {/* Testimonial cards carousel */}
-        <div
-          className={`relative carousel-container ${
-            isVisible ? "fade-in-up-delayed" : "opacity-0"
-          }`}
-        >
-          {/* Left scroll button */}
-          <button
-            onClick={scrollLeft}
-            className="nav-button nav-button-left absolute -left-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/80 border border-lime-400/30 flex items-center justify-center text-lime-400"
-            aria-label="Scroll left"
-          >
-            <svg
-              className="w-5 h-5 arrow-bounce-left"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-
-          {/* Right scroll button */}
-          <button
-            onClick={scrollRight}
-            className="nav-button nav-button-right absolute -right-10 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/80 border border-lime-400/30 flex items-center justify-center text-lime-400"
-            aria-label="Scroll right"
-          >
-            <svg
-              className="w-5 h-5 arrow-bounce-right"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-
-          {/* Carousel container */}
-          <div
-            ref={scrollRef}
-            className="flex overflow-x-auto pb-6 gap-4 snap-x scrollbar-hide px-2"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-          >
-            {testimonials.map((testimonial, index) => (
-              <div
-                id={`card-${testimonial.id}`}
-                key={testimonial.id}
-                onClick={() => {
-                  setActiveTestimonial(testimonial);
-                  setAutoScrollEnabled(false);
-                  setTimeout(() => setAutoScrollEnabled(true), 10000);
-                }}
-                className={`testimonial-card flex-shrink-0 w-[280px] snap-start rounded-lg border p-4 cursor-pointer text-sm
-                  ${isVisible ? "card-fade-in" : "opacity-0"}
-                  ${
-                    activeTestimonial.id === testimonial.id
-                      ? "border-lime-400 bg-lime-400/10 card-active"
-                      : "border-lime-400/20 bg-black/60"
-                  }
-                `}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {/* Rating */}
-                <div className="mb-2">{renderStars(testimonial.rating)}</div>
-
-                {/* Testimonial */}
-                <p className="text-gray-200 mb-3 line-clamp-3 card-text">
-                  {testimonial.text}
-                </p>
-
-                {/* Name */}
-                <p className="text-white font-medium card-name">
-                  {testimonial.name}
-                </p>
-                <p className="text-gray-400 text-xs">{testimonial.company}</p>
-
-                {/* Bottom dot indicator */}
-                <div className="mt-3 flex justify-center">
-                  <div
-                    className={`w-2 h-2 rounded-full card-dot ${
-                      activeTestimonial.id === testimonial.id
-                        ? "bg-lime-400 dot-active"
-                        : "bg-lime-900/50"
-                    }`}
-                  ></div>
-                </div>
-              </div>
+          {/* Slider Dots */}
+          <div className="flex justify-center mt-10 space-x-2 flex-wrap gap-y-2">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => handleDotClick(i)}
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  getRealIndex() === i
+                    ? "bg-lime-400 w-8"
+                    : "bg-gray-700 hover:bg-lime-400/50 w-2.5"
+                }`}
+                aria-label={`Go to testimonial ${i + 1}`}
+              ></button>
             ))}
           </div>
-        </div>
-
-        {/* Scroll indicator dots */}
-        <div
-          className={`flex justify-center mt-6 gap-2 ${
-            isVisible ? "fade-in-up-more-delayed" : "opacity-0"
-          }`}
-        >
-          {testimonials.map((testimonial, index) => (
-            <button
-              key={testimonial.id}
-              onClick={() => {
-                setActiveTestimonial(testimonial);
-                scrollToCard(testimonial.id);
-                setAutoScrollEnabled(false);
-                setTimeout(() => setAutoScrollEnabled(true), 10000);
-              }}
-              className={`indicator-dot h-2 rounded-full ${
-                activeTestimonial.id === testimonial.id
-                  ? "bg-lime-400 w-6 indicator-active"
-                  : "bg-lime-400/30 w-2"
-              }`}
-              style={{ animationDelay: `${700 + index * 50}ms` }}
-              aria-label={`View testimonial from ${testimonial.name}`}
-            />
-          ))}
         </div>
       </div>
     </section>
   );
 };
 
-export default TestimonialsSection;
+export default TestimonialSection;

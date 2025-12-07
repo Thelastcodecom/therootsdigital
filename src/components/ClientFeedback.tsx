@@ -1,4 +1,3 @@
-//@ts-nocheck
 "use client";
 import { useState, useEffect, useRef } from "react";
 
@@ -315,9 +314,7 @@ const ClientFeedback = () => {
       {/* Content wrapper */}
       <div className="relative z-10 container mx-auto py-10 px-4 sm:px-10 lg:px-20">
         {/* Optional: Add a section header with animation */}
-        <div ref={headerRef} className="mb-16 text-center">
-
-        </div>
+        <div ref={headerRef} className="mb-16 text-center"></div>
 
         {/* Client Cards with individual animations */}
         {clientData.map((client, index) => (

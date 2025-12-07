@@ -254,3 +254,22 @@ body {
 .star-animate {
   opacity: 0;
   animation: starSpin }
+
+
+.scrollbar-custom {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--thumb) #16171B; /* Firefox: thumb : track */
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #16171B;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: var(--thumb);
+  border-radius: 3px;
+}

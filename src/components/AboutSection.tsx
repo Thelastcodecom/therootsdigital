@@ -46,67 +46,59 @@ const content: Record<Tab, JSX.Element> = {
   mission: (
     <>
       <p className="leading-8 text-gray-300 mb-10">
-        At the heart of everything we do lies one powerful belief to{" "}
-        <span className="text-lime-accent">revolutionize</span> how creativity
-        and technology empower human potential. We seek to revolutionize the way
-        ideas are born, built, and experienced, turning imagination into impact
-        and <span className="text-lime-accent">innovation</span> into emotion.
+        Our mission is to <span className="text-lime-accent">rethink</span> how
+        digital innovation shapes brands in an ever-evolving world. We see
+        technology not just as tools or trends, but as the language of modern
+        connection. Every brand has a story our goal is to transform that story
+        into a powerful, memorable digital experience.
       </p>
       <p className="leading-8 text-gray-300">
-        Our mission is to ignite the power of ideas and amplify the voices of
-        those who dare to dream. Through the fusion of technology, creativity,
-        and passion, we aim to reshape industries, elevate communities, and make
-        a positive impact on the world. Every project we take on is a step
-        toward creating a more vibrant and inclusive future where creativity
-        drives meaningful change.
+        We craft human-centered journeys that connect, inspire, and deliver
+        measurable impact. From creative design and branding to smart
+        development and strategy, we create solutions that drive real growth. In
+        a constantly changing world, we blend creativity with
+        <span className="text-lime-accent">innovation</span> to help brands
+        stand out with purpose and progress.
       </p>
     </>
   ),
   vision: (
     <>
       <p className="leading-8 text-gray-300 mb-10">
-        Our vision goes beyond change; it's a movement to{" "}
-        <span className="text-lime-accent">revolutionize</span> connection,
-        collaboration, and growth through digital transformation. We believe
-        every brand, every idea, and every story has the power to evolve,
-        inspire, and make a difference when guided by purpose, fueled by
-        creativity, and driven by the will to{" "}
-        <span className="text-lime-accent">revolutionize</span>.
+        Our vision is to <span className="text-lime-accent">reinvent</span> how
+        brands connect and create impact in the digital age. We continue to
+        reinvent the boundaries of creativity and technology, shaping
+        experiences that inspire trust and build lasting relationships. For us,
+        <span className="text-lime-accent">innovation</span> isn’t just about
+        being new it’s about being meaningful.
       </p>
       <p className="leading-8 text-gray-300">
-        We envision a world where technology serves as a bridge, not a barrier,
-        empowering individuals and organizations to collaborate, innovate, and
-        transform. Our goal is to create a future where digital experiences not
-        only drive business growth but also foster human connections that
-        transcend borders and cultures. We believe in a future where ideas
-        flourish and creativity is the key to solving the world's most pressing
-        challenges.
+        We aim to <span className="text-lime-accent">reimagine</span> digital
+        storytelling that sparks emotion, drives engagement, and fuels growth.
+        By blending imagination, innovation, and intelligence, we help brands
+        move beyond trends and into transformation redefining the digital world
+        with purpose, creativity, and heart. The future belongs to those who
+        dare to <span className="text-lime-accent">reinvent</span>.
       </p>
     </>
   ),
   value: (
     <>
       <p className="leading-8 text-gray-300 mb-10">
-        We believe in the power of creativity, technology, and human potential.
-        Our values are rooted in innovation, collaboration, and making a
-        meaningful impact. We are committed to building a future where ideas
-        inspire, transform, and drive change.
+        At the heart of everything we do lies one powerful belief to
+        <span className="text-lime-accent">revolutionize</span> how creativity
+        and technology empower human potential. We seek to revolutionize the way
+        ideas are born, built, and experienced, turning imagination into impact
+        and <span className="text-lime-accent">innovation</span> into emotion.
       </p>
       <p className="leading-8 text-gray-300">
-        Our core values define everything we do, guiding us to always aim for
-        excellence and to embrace challenges as opportunities. We place a high
-        value on transparency, integrity, and accountability, ensuring that
-        every action we take is aligned with our mission and vision. By
-        fostering a culture of collaboration, we believe we can harness the
-        collective genius of our teams, clients, and partners to achieve great
-        things.
-      </p>
-      <p className="leading-8 text-gray-300">
-        We are deeply committed to creating positive social and environmental
-        impact, recognizing that the future we build today will shape the world
-        of tomorrow. Our values inspire us to act responsibly and with purpose,
-        championing diversity, inclusion, and sustainability in all our
-        endeavors.
+        Our vision goes beyond change; it’s a movement to{" "}
+        <span className="text-lime-accent">revolutionize</span>
+        connection, collaboration, and growth through digital transformation. We
+        believe every brand, every idea, and every story has the power to
+        evolve, inspire, and make a difference when guided by purpose, fueled by
+        creativity, and driven by the will to{" "}
+        <span className="text-lime-accent">revolutionize.</span>
       </p>
     </>
   ),
@@ -123,6 +115,7 @@ const ValueSection: React.FC = () => {
   const { ref: contentRef, isInView: contentInView } = useInView(0.2);
   const { ref: textLayerRef, isInView: textLayerInView } = useInView(0.3);
   const { ref: astronautRef, isInView: astronautInView } = useInView(0.3);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   // Mouse move handler to create the hover effect
   const handleMouseEnter = () => {
@@ -221,52 +214,65 @@ const ValueSection: React.FC = () => {
         {/* RIGHT SIDE ASTRONAUT & TEXT */}
         <div
           className="w-full h-[500px] lg:h-[600px] relative flex items-center justify-center"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setTilt({ x: 0, y: 0 });
+          }}
+          onMouseMove={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+
+            const rotateY = ((offsetX - rect.width / 2) / rect.width) * 20;
+            const rotateX = -((offsetY - rect.height / 2) / rect.height) * 20;
+
+            setTilt({ x: rotateX, y: rotateY });
+          }}
         >
-          {/* 1. TEXT LAYER (Behind the Astronaut) with scroll animation */}
+          {/* TEXT LAYER */}
           <div
-            ref={textLayerRef as RefObject<HTMLDivElement>}
+            ref={textLayerRef}
             className="absolute inset-0 z-0 flex flex-col items-center justify-center select-none pointer-events-none"
           >
-            {/* Top Row: "the" ..... "roots" */}
             <div className="flex justify-between w-full px-4 lg:px-0">
               <span
-                className={`text-[80px] lg:text-[120px] font-bold leading-none text-transparent uppercase font-sans transition-all duration-1000 ease-out ${
+                className={`text-[80px] lg:text-[120px] font-bold leading-none text-transparent uppercase transition-all duration-1000 ${
                   textLayerInView
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-20"
                 }`}
                 style={{
-                  WebkitTextStroke: "1px rgba(255, 255, 255, 0.2)",
+                  WebkitTextStroke: "1px rgba(255,255,255,0.2)",
                   transitionDelay: "200ms",
                 }}
               >
                 the
               </span>
+
               <span
-                className={`text-[80px] lg:text-[120px] font-bold leading-none text-transparent uppercase font-sans transition-all duration-1000 ease-out ${
+                className={`text-[80px] lg:text-[120px] font-bold leading-none text-transparent uppercase transition-all duration-1000 ${
                   textLayerInView
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 translate-x-20"
                 }`}
                 style={{
-                  WebkitTextStroke: "1px rgba(255, 255, 255, 0.2)",
+                  WebkitTextStroke: "1px rgba(255,255,255,0.2)",
                   transitionDelay: "400ms",
                 }}
               >
                 roots
               </span>
             </div>
-            {/* Bottom Row: "digital." */}
+
             <span
-              className={`text-[80px] lg:text-[130px] font-bold leading-none text-transparent uppercase font-sans -mt-4 lg:-mt-8 transition-all duration-1000 ease-out ${
+              className={`text-[80px] lg:text-[130px] font-bold leading-none text-transparent uppercase -mt-4 lg:-mt-8 transition-all duration-1000 ${
                 textLayerInView
                   ? "opacity-100 translate-y-0 scale-100"
                   : "opacity-0 translate-y-10 scale-95"
               }`}
               style={{
-                WebkitTextStroke: "1px rgba(255, 255, 255, 0.2)",
+                WebkitTextStroke: "1px rgba(255,255,255,0.2)",
                 transitionDelay: "600ms",
               }}
             >
@@ -274,10 +280,10 @@ const ValueSection: React.FC = () => {
             </span>
           </div>
 
-          {/* 2. ASTRONAUT LAYER (Front) with scroll animation */}
+          {/* ASTRONAUT */}
           <div
-            ref={astronautRef as RefObject<HTMLDivElement>}
-            className={`relative z-10 w-full h-full flex items-center justify-center transition-all duration-1200 ease-out ${
+            ref={astronautRef}
+            className={`relative z-10 w-full h-full flex items-center justify-center transition-all duration-1000 ${
               astronautInView
                 ? "opacity-100 translate-y-0 scale-100"
                 : "opacity-0 translate-y-20 scale-90"
@@ -289,11 +295,12 @@ const ValueSection: React.FC = () => {
               alt="astronaut"
               width={500}
               height={500}
-              className={`object-contain select-none drop-shadow-2xl transition-all duration-500 ease-in-out ${
-                isHovered
-                  ? "transform -translate-y-6 scale-105"
-                  : "transform translate-y-0 scale-100"
-              }`}
+              className="object-contain select-none drop-shadow-2xl transition-transform duration-300 ease-out"
+              style={{
+                transform: isHovered
+                  ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.1)`
+                  : "perspective(900px) rotateX(0deg) rotateY(0deg) scale(1)",
+              }}
             />
           </div>
         </div>

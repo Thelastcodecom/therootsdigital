@@ -1,4 +1,4 @@
-//@ts-nocheck
+import React from "react";
 
 // Sample data for the three steps
 const stepsData = [
@@ -16,7 +16,7 @@ const stepsData = [
     image: "/images/steps/step 2.webp",
     description: "We build your website fully, from A to Z",
     time: "7 days",
-    desktopTransform: "translateY(5%)", // Slight offset to match UI
+    desktopTransform: "translateY(5%)",
   },
   {
     step: 3,
@@ -24,11 +24,11 @@ const stepsData = [
     image: "/images/steps/step 3.webp",
     description: "We launch your website with you live over Zoom",
     time: "30 min",
-    desktopTransform: "translateY(10%)", // Slight offset to match UI
+    desktopTransform: "translateY(10%)",
   },
 ];
 
-// Sample data for the logos (doubled for the seamless loop effect)
+// Sample data for the logos
 const mockLogos = [
   { name: "ONE STOP HOME REPAIRS", color: "#000000" },
   { name: "MY FINANCIAL", color: "#000000" },
@@ -46,14 +46,12 @@ const mockLogos = [
  * Helper component for individual logo cards
  */
 const LogoCard = ({ logo, isLimeBanner }) => (
-  // min-w-[200px] ensures space between logos and prevents wrapping
-  <div className="flex-shrink-0 min-w-[250px] mx-8 flex flex-col items-center justify-center text-center">
+  <div className="flex-shrink-0 min-w-[200px] mx-6 flex flex-col items-center justify-center text-center">
     {/* Placeholder Icon/Logo */}
     <div
-      // Reduced logo size
       className="w-10 h-10 rounded-full border-2 mb-2 flex items-center justify-center"
       style={{
-        backgroundColor: isLimeBanner ? "#c4ef17 " : "#ffffff",
+        backgroundColor: isLimeBanner ? "#c4ef17" : "#ffffff",
         color: "#000000",
         borderColor: "#000000",
       }}
@@ -64,74 +62,54 @@ const LogoCard = ({ logo, isLimeBanner }) => (
     </div>
 
     {/* Logo Name/Tagline */}
-    <p className="text-[10px] font-semibold uppercase text-black whitespace-normal">
+    <p className="text-[10px] font-semibold uppercase text-black whitespace-nowrap">
       {logo.name}
     </p>
-    <p className="text-[8px] text-black whitespace-normal">Partner Since '23</p>
+    <p className="text-[8px] text-black whitespace-nowrap">Partner Since &apos;23</p>
   </div>
 );
 
 /**
- * MarqueeBand Component
- * Handles the duplication, scrolling animation, and rotation for one band.
+ * MarqueeBand Component - Improved version with full-width coverage
  */
-const MarqueeBand = ({ directionClass, rotationClass, isLimeBanner }) => {
-  // Determine animation duration based on direction
-  const duration = directionClass === "scrollLeft" ? "40s" : "45s"; // Subtle speed difference
+const MarqueeBand = ({ direction, rotation, isLimeBanner }) => {
+  const animationName = direction === "left" ? "marqueeLeft" : "marqueeRight";
+  const duration = direction === "left" ? "35s" : "40s";
 
   return (
     <div
-      // Reduced height from 150px to 100px for a smaller banner
-      className={`absolute inset-0 w-full h-[100px] py-2 shadow-md overflow-hidden border-y-2 z-10 
-                 md:transform ${rotationClass} origin-center transition-transform duration-300 ease-in-out`}
+      className="w-[200vw] h-[100px] py-2 shadow-lg overflow-hidden border-y-2 flex items-center"
       style={{
-        backgroundColor: isLimeBanner ? "#c4ef17 " : "#ffffff",
+        backgroundColor: isLimeBanner ? "#c4ef17" : "#ffffff",
         borderColor: "#000000",
+        transform: `translateX(-50vw) rotate(${rotation}deg)`,
       }}
     >
       <style>{`
-        /* Separate keyframes for left and right scrolling */
-        @keyframes scrollLeft {
-            from { transform: translateX(0%); }
-            to { transform: translateX(-100%); }
+        @keyframes marqueeLeft {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-        @keyframes scrollRight {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(0%); }
-        }
-        /* Ensure logos are vertically centered */
-        .marquee-content {
-          height: 100%;
-          align-items: center;
+        @keyframes marqueeRight {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
         }
       `}</style>
 
-      <div className="marquee-container h-full">
-        <div
-          className="marquee-content inline-flex"
-          style={{
-            animation: `${directionClass} ${duration} linear infinite`,
-            width: "200%",
-          }}
-        >
-          {/* Content Strip 1 */}
-          {mockLogos.map((logo, index) => (
-            <LogoCard
-              key={`s1-${index}`}
-              logo={logo}
-              isLimeBanner={isLimeBanner}
-            />
-          ))}
-          {/* Content Strip 2 (Duplicate for seamless loop) */}
-          {mockLogos.map((logo, index) => (
-            <LogoCard
-              key={`s2-${index}`}
-              logo={logo}
-              isLimeBanner={isLimeBanner}
-              isDuplicate={true}
-            />
-          ))}
-        </div>
+      <div
+        className="flex items-center"
+        style={{
+          animation: `${animationName} ${duration} linear infinite`,
+        }}
+      >
+        {/* Quadruple the logos for seamless infinite scroll */}
+        {[...mockLogos, ...mockLogos, ...mockLogos, ...mockLogos].map((logo, index) => (
+          <LogoCard
+            key={`logo-${index}`}
+            logo={logo}
+            isLimeBanner={isLimeBanner}
+          />
+        ))}
       </div>
     </div>
   );
@@ -139,12 +117,11 @@ const MarqueeBand = ({ directionClass, rotationClass, isLimeBanner }) => {
 
 /**
  * LaunchProcessAndMarquee Component
- * Implements the 3-step process section and the continuous, angled logo banner.
  */
 const LaunchProcessAndMarquee = () => {
   return (
-    <div className="bg-black text-white py-20 font-inter ">
-      {/* --- Section 1: 3 Steps to Launch Your Website (Cards are fine, keeping them as is) --- */}
+    <div className="bg-black text-white py-20 font-inter">
+      {/* --- Section 1: 3 Steps to Launch Your Website --- */}
       <div className="px-4 text-center mb-24 container mx-auto">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-16">
           3 steps to launch your website
@@ -189,44 +166,44 @@ const LaunchProcessAndMarquee = () => {
         </div>
       </div>
 
-      {/* --- Section 2: X-shaped Scrolling Logo Banners on desktop, stacked on mobile --- */}
-      {/* Reduced overall height and used fixed sizes for better control */}
-      <div className="w-full relative h-40 md:h-56 overflow-hidden">
-        {/* Band 1: Rotates Left-Down (Lime Banner) */}
-        {/* Softer angle: -3deg. Positioned to cross slightly above center */}
-        <div className="absolute inset-0 z-20 md:top-1/4 md:translate-y-[-25%]">
+      {/* --- Section 2: X-shaped Scrolling Logo Banners --- */}
+      <div className="w-full relative h-48 md:h-64 overflow-hidden">
+        
+        {/* Band 1: Lime Banner - Rotates Left-Down */}
+        <div className="absolute w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-[70%] md:-translate-y-[60%] z-20">
+          {/* Desktop: Rotated */}
           <div className="hidden md:block">
             <MarqueeBand
-              directionClass="scrollLeft"
-              rotationClass="rotate-[-3deg]"
+              direction="left"
+              rotation={-3}
               isLimeBanner={true}
             />
           </div>
-          {/* Mobile: Straight, positioned in the top half */}
-          <div className="block md:hidden h-1/2 relative">
+          {/* Mobile: Straight */}
+          <div className="block md:hidden">
             <MarqueeBand
-              directionClass="scrollLeft"
-              rotationClass="rotate-0"
+              direction="left"
+              rotation={0}
               isLimeBanner={true}
             />
           </div>
         </div>
 
-        {/* Band 2: Rotates Right-Down (White Banner) */}
-        {/* Softer angle: 3deg. Positioned to cross slightly below center */}
-        <div className="absolute inset-0 z-10 md:bottom-1/4 md:translate-y-[25%]">
+        {/* Band 2: White Banner - Rotates Right-Down */}
+        <div className="absolute w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-[30%] md:-translate-y-[40%] z-10">
+          {/* Desktop: Rotated */}
           <div className="hidden md:block">
             <MarqueeBand
-              directionClass="scrollRight"
-              rotationClass="rotate-[3deg]"
+              direction="right"
+              rotation={3}
               isLimeBanner={false}
             />
           </div>
-          {/* Mobile: Straight, positioned in the bottom half */}
-          <div className="block md:hidden h-1/2 relative top-1/2">
+          {/* Mobile: Straight */}
+          <div className="block md:hidden">
             <MarqueeBand
-              directionClass="scrollRight"
-              rotationClass="rotate-0"
+              direction="right"
+              rotation={0}
               isLimeBanner={false}
             />
           </div>
