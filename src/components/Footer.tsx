@@ -170,10 +170,10 @@ const Footer: React.FC = () => {
 
   const quickLinks = [
     { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
-    { name: "Services", href: "/services" },
-    { name: "Portfolio", href: "/portfolio" },
     { name: "Blog", href: "/blog" },
+    { name: "Contact", href: "/contact" },
+    { name: "Our Pricing", href: "/pricing" },
+
   ];
 
   const utilityLinks = [
@@ -184,45 +184,8 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative bg-black text-white overflow-hidden">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-lime-400/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute top-1/2 right-0 w-80 h-80 bg-lime-400/5 rounded-full blur-3xl translate-x-1/2" />
+    <footer className="relative bg-black text-white overflow-hidden ">
 
-      {/* Heading Section */}
-      <div className="relative container mx-auto px-4 pt-16 md:pt-24 pb-12 md:pb-20 text-center">
-        {/* Animated Badge */}
-        <div className="inline-flex items-center gap-2 mb-6">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-lime-400"></span>
-          </span>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">
-            Blog & Article
-          </p>
-        </div>
-
-        {/* Main Heading */}
-        <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white uppercase tracking-tight leading-none">
-          EXPLORE{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-lime-300">
-            BLOG
-          </span>
-        </h2>
-        <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold text-white uppercase tracking-tight leading-none mt-2">
-          & ARTICLE
-        </h2>
-
-        {/* Decorative Line */}
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-lime-400/50" />
-          <div className="w-2 h-2 rounded-full bg-lime-400" />
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-lime-400/50" />
-        </div>
-      </div>
-
-      {/* Gap between heading and image */}
-      <div className="h-8 md:h-16" />
 
       {/* Background Image Section - FIXED: Full height with horizontal repeat */}
       <div className="relative min-h-[500px] md:min-h-[600px]">
