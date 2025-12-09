@@ -1,9 +1,15 @@
 import React from 'react'
+import Subscription from '@/components/our-pricing/SubscriptionsSection'
+import ClientFeedback from '@/components/our-pricing/ClientFeedback'
+import TestimonialSection from '@/components/our-pricing/TestimonialSection'
 
-const page = () => {
+export default function OurPricing() {
   return (
-    <div>page</div>
+    <>
+    <Subscription />
+    <ClientFeedback />
+    <TestimonialSection />
+    </>
   )
 }
 
-export default page

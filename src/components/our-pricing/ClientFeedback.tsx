@@ -198,7 +198,7 @@ const AnimatedClientCard = ({ client, index }) => {
       }}
     >
       {/* Info Section with staggered text animations */}
-      <div className="flex-1 text-white text-left p-4 md:mr-10 w-full md:w-auto mb-6 md:mb-0">
+      <div className="flex-1 text-white text-left p-4 md:mr-10 w-full md:w-auto mb-6 md:mb-0 ">
         {infoItems.map((item, i) => (
           <div key={item.label} className="overflow-hidden">
             <p

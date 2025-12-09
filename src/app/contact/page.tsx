@@ -3,8 +3,10 @@ import React from 'react'
 
 const page = () => {
   return (
-    <ContactForm />
-  )
+    <>
+      <ContactForm />
+    </>
+  );
 }
 
 export default page

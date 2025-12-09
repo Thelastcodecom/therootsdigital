@@ -1,9 +1,5 @@
-import React from 'react'
+import BlogLayout from "@/components/blog/BlogLayout";
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
+export default function Page() {
+  return <BlogLayout />;
 }
-
-export default page

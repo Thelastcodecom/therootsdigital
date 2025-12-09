@@ -63,10 +63,6 @@ export default function ContactPage() {
 
   return (
     <div className="bg-black text-white min-h-screen font-sans pt-20">
-      <style>{`
-        .font-marcellus { font-family: Cambria, Georgia, "Times New Roman", Times, serif; }
-        .font-outfit { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
-      `}</style>
 
       <div className="text-center pt-20 pb-10">
         <h1 className="text-xl tracking-[0.2rem] font-marcellus">CONTACT</h1>

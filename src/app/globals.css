@@ -273,3 +273,11 @@ body {
   background: var(--thumb);
   border-radius: 3px;
 }
+.inner-gradient-glow {
+  background: radial-gradient(
+    ellipse at right,
+    transparent 70%,
+    rgba(168, 224, 56, 0.45) 80%,
+    rgba(148, 185, 73, 0.75) 100%
+  );
+}
