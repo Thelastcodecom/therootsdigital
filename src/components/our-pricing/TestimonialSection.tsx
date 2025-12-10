@@ -3,8 +3,26 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 
-const TestimonialSection = () => {
-  const testimonials = [
+// --- Interfaces ---
+interface Testimonial {
+  id: number;
+  text: string;
+  author: string;
+  stars: number;
+}
+
+interface StarRatingProps {
+  count: number;
+}
+
+interface TestimonialCardProps {
+  item: Testimonial;
+  isActive: boolean;
+}
+
+// --- Component ---
+const TestimonialSection: React.FC = () => {
+  const testimonials: Testimonial[] = [
     {
       id: 1,
       text: "The Roots Digital went above and beyond in creating my animation project...",
@@ -92,45 +110,39 @@ const TestimonialSection = () => {
   ];
 
   const totalSlides = testimonials.length;
-  const cloneCount = 5; // Number of clones on each side for smooth infinite loop
+  const cloneCount = 5;
 
-  // Create extended array with clones for infinite effect
-  const extendedTestimonials = [
+  const extendedTestimonials: Testimonial[] = [
     ...testimonials.slice(-cloneCount),
     ...testimonials,
     ...testimonials.slice(0, cloneCount),
   ];
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(true);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const sliderRef = useRef(null);
-  const cardWidth = 272; // w-64 (256px) + mx-2 (16px margins)
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(true);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const cardWidth = 272;
 
-  // The position in extended array (offset by cloneCount)
   const extendedIndex = activeIndex + cloneCount;
 
-  // Update container width on mount and resize
   useEffect(() => {
     const updateWidth = () => {
       if (sliderRef.current) {
         setContainerWidth(sliderRef.current.offsetWidth);
       }
     };
-
     updateWidth();
     window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // Calculate transform to center the active card
   const getTransformValue = useCallback(() => {
     const centerOffset = containerWidth / 2 - cardWidth / 2;
     const slideOffset = extendedIndex * cardWidth;
     return centerOffset - slideOffset;
   }, [containerWidth, extendedIndex]);
 
-  // Handle infinite loop - jump without animation when reaching clones
   const handleTransitionEnd = useCallback(() => {
     if (activeIndex >= totalSlides) {
       setIsTransitioning(false);
@@ -141,7 +153,6 @@ const TestimonialSection = () => {
     }
   }, [activeIndex, totalSlides]);
 
-  // Re-enable transition after instant jump
   useEffect(() => {
     if (!isTransitioning) {
       const timer = requestAnimationFrame(() => {
@@ -153,35 +164,24 @@ const TestimonialSection = () => {
     }
   }, [isTransitioning]);
 
-  // Auto-slide every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => prev + 1);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
 
-  const handlePrev = () => {
-    setActiveIndex((prev) => prev - 1);
-  };
+  const handlePrev = () => setActiveIndex((prev) => prev - 1);
+  const handleNext = () => setActiveIndex((prev) => prev + 1);
+  const handleDotClick = (index: number) => setActiveIndex(index);
 
-  const handleNext = () => {
-    setActiveIndex((prev) => prev + 1);
-  };
-
-  const handleDotClick = (index) => {
-    setActiveIndex(index);
-  };
-
-  // Get the real index for dot highlighting (handles negative and overflow)
-  const getRealIndex = () => {
+  const getRealIndex = (): number => {
     if (activeIndex < 0) return totalSlides + activeIndex;
     if (activeIndex >= totalSlides) return activeIndex - totalSlides;
     return activeIndex;
   };
 
-  const StarRating = ({ count }) => (
+  const StarRating: React.FC<StarRatingProps> = ({ count }) => (
     <div className="flex space-x-0.5">
       {Array.from({ length: 5 }, (_, i) => (
         <Star
@@ -194,14 +194,13 @@ const TestimonialSection = () => {
     </div>
   );
 
-  const TestimonialCard = ({ item, isActive }) => (
+  const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, isActive }) => (
     <div
-      className={`flex-shrink-0 w-64 p-4 mx-2 rounded-lg backdrop-blur-sm shadow-2xl 
+      className={`shrink-0 w-64 p-4 mx-2 rounded-lg backdrop-blur-sm shadow-2xl 
         transition-all duration-500 ease-out cursor-pointer
-        ${
-          isActive
-            ? "bg-zinc-800 border-2 border-lime-400 scale-105 shadow-lime-400/30"
-            : "bg-zinc-800/50 border border-lime-400/30 scale-95 opacity-70 hover:opacity-90"
+        ${isActive
+          ? "bg-zinc-800 border-2 border-lime-400 scale-105 shadow-lime-400/30"
+          : "bg-zinc-800/50 border border-lime-400/30 scale-95 opacity-70 hover:opacity-90"
         }`}
     >
       <StarRating count={item.stars} />
@@ -214,51 +213,8 @@ const TestimonialSection = () => {
   return (
     <section className="w-full min-h-[80vh] bg-zinc-900 overflow-hidden">
       <div className="container mx-auto px-4 md:px-8 py-16 md:py-24">
-        {/* TOP SECTION */}
-        <div
-          className="relative p-8 md:p-12 lg:p-20 rounded-xl overflow-hidden
-             bg-gradient-to-r from-lime-400/60 to-zinc-900/95 
-             shadow-2xl shadow-lime-400/20"
-        >
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-l from-zinc-900 to-transparent z-0"></div>
-
-          {/* CONTENT */}
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            {/* LEFT — Trustpilot Image */}
-            <div className="flex justify-center lg:justify-start w-full lg:w-1/3 mb-10 lg:mb-0">
-              <img
-                src="/images/testimonial/trustpilot.webp"
-                alt="Trustpilot"
-                className="w-40 md:w-52 lg:w-64 object-contain"
-              />
-            </div>
-
-            {/* RIGHT — Quote + Rating */}
-            <div className="text-center lg:text-left w-full lg:w-2/3">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight max-w-3xl">
-                I was impressed how smooth the whole process was with them. They
-                have been proactive to resolve my concerns in a timely manner.
-              </h2>
-
-              <div className="mt-8 text-white">
-                <p className="text-base font-semibold">
-                  Source: Every TRD Customer
-                </p>
-                <p className="text-xl font-bold mt-1">Rated 4.8 Excellent</p>
-                <img
-                  src="/images/testimonial/stars.png"
-                  alt="stars"
-                  className="w-40 md:w-48 mt-2"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* SLIDER SECTION */}
+        {/* Slider Section */}
         <div className="mt-12 md:mt-16 relative">
-          {/* Navigation Arrows */}
           <button
             onClick={handlePrev}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"
@@ -266,7 +222,6 @@ const TestimonialSection = () => {
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-
           <button
             onClick={handleNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"
@@ -275,38 +230,20 @@ const TestimonialSection = () => {
             <ChevronRight className="w-6 h-6" />
           </button>
 
-          {/* Slider Container */}
-          <div ref={sliderRef} className="overflow-hidden mx-8 md:mx-12">
-            {/* Gradient Masks */}
-            <div className="absolute left-8 md:left-12 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-zinc-900 to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-8 md:right-12 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-zinc-900 to-transparent z-10 pointer-events-none"></div>
-
-            {/* Cards Track */}
+          <div ref={sliderRef} className="overflow-hidden mx-8 md:mx-12 relative">
             <div
-              className={`flex py-4 ${
-                isTransitioning
-                  ? "transition-transform duration-500 ease-out"
-                  : ""
-              }`}
-              style={{
-                transform: `translateX(${getTransformValue()}px)`,
-              }}
+              className={`flex py-4 ${isTransitioning ? "transition-transform duration-500 ease-out" : ""}`}
+              style={{ transform: `translateX(${getTransformValue()}px)` }}
               onTransitionEnd={handleTransitionEnd}
             >
               {extendedTestimonials.map((item, index) => {
-                // Determine if this card should appear active
                 const isActive = index === extendedIndex;
-
                 return (
                   <div
                     key={`${item.id}-${index}`}
                     onClick={() => {
-                      // Calculate the real index from the extended index
                       const clickedRealIndex = index - cloneCount;
-                      if (
-                        clickedRealIndex >= 0 &&
-                        clickedRealIndex < totalSlides
-                      ) {
+                      if (clickedRealIndex >= 0 && clickedRealIndex < totalSlides) {
                         setActiveIndex(clickedRealIndex);
                       }
                     }}
@@ -316,22 +253,22 @@ const TestimonialSection = () => {
                 );
               })}
             </div>
-          </div>
 
-          {/* Slider Dots */}
-          <div className="flex justify-center mt-10 space-x-2 flex-wrap gap-y-2">
-            {testimonials.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => handleDotClick(i)}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  getRealIndex() === i
-                    ? "bg-lime-400 w-8"
-                    : "bg-gray-700 hover:bg-lime-400/50 w-2.5"
-                }`}
-                aria-label={`Go to testimonial ${i + 1}`}
-              ></button>
-            ))}
+            {/* Slider Dots */}
+            <div className="flex justify-center mt-10 space-x-2 flex-wrap gap-y-2">
+              {testimonials.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleDotClick(i)}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    getRealIndex() === i
+                      ? "bg-lime-400 w-8"
+                      : "bg-gray-700 hover:bg-lime-400/50 w-2.5"
+                  }`}
+                  aria-label={`Go to testimonial ${i + 1}`}
+                ></button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

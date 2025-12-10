@@ -1,9 +1,16 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+
+import { useState, useEffect, useRef, Ref, RefObject } from "react";
 
 // --- Custom Hook for Intersection Observer ---
-const useInView = (options = {}) => {
-  const ref = useRef(null);
+interface UseInViewOptions extends IntersectionObserverInit {}
+interface UseInViewReturn {
+  ref: React.RefObject<HTMLElement | null>;
+  isInView: boolean;
+}
+
+const useInView = (options: UseInViewOptions = {}): UseInViewReturn => {
+  const ref = useRef<HTMLElement | null>(null);
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
@@ -29,13 +36,21 @@ const useInView = (options = {}) => {
     return () => {
       if (element) observer.unobserve(element);
     };
-  }, []);
+  }, [options]);
 
   return { ref, isInView };
 };
 
 // --- Data Definition ---
-const clientData = [
+interface ClientDataType {
+  name: string;
+  designation: string;
+  work: string;
+  videoAlt: string;
+  videoLink: string;
+}
+
+const clientData: ClientDataType[] = [
   {
     name: "Derek Shull",
     designation: "Co-Founder",
@@ -53,7 +68,11 @@ const clientData = [
 ];
 
 // --- Sub Component: Copy Link Button ---
-const CopyLinkButton = ({ linkUrl }) => {
+interface CopyLinkButtonProps {
+  linkUrl: string;
+}
+
+const CopyLinkButton: React.FC<CopyLinkButtonProps> = ({ linkUrl }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -87,20 +106,30 @@ const CopyLinkButton = ({ linkUrl }) => {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth="2"
+          strokeWidth={2}
           d="M8 7v4a1 1 0 001 1h5a1 1 0 001-1V7m0 0a2 2 0 012 2v10a2 2 0 01-2 2H9a2 2 0 01-2-2V9a2 2 0 012-2h5z"
-        ></path>
+        />
       </svg>
       {copied ? "Copied!" : "Copy link"}
     </button>
   );
 };
 
-// --- Sub Component: Video Card with State Logic ---
-const ClientVideoCard = ({ client, isVisible, delay = 0 }) => {
+// --- Sub Component: Video Card ---
+interface ClientVideoCardProps {
+  client: ClientDataType;
+  isVisible: boolean;
+  delay?: number;
+}
+
+const ClientVideoCard: React.FC<ClientVideoCardProps> = ({
+  client,
+  isVisible,
+  delay = 0,
+}) => {
   const [showVideo, setShowVideo] = useState(false);
 
-  const getVideoId = (url) => {
+  const getVideoId = (url: string) => {
     const match = url.match(/[?&]v=([^&]+)/);
     return match ? match[1] : null;
   };
@@ -117,11 +146,7 @@ const ClientVideoCard = ({ client, isVisible, delay = 0 }) => {
     <div
       className={`flex-1 w-full md:max-w-md relative aspect-video shadow-2xl rounded-lg overflow-hidden bg-gray-900
         transition-all duration-700 ease-out
-        ${
-          isVisible
-            ? "opacity-100 translate-x-0 scale-100"
-            : "opacity-0 translate-x-10 scale-95"
-        }`}
+        ${isVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 translate-x-10 scale-95"}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       <CopyLinkButton linkUrl={client.videoLink} />
@@ -172,7 +197,15 @@ const ClientVideoCard = ({ client, isVisible, delay = 0 }) => {
 };
 
 // --- Sub Component: Animated Client Card ---
-const AnimatedClientCard = ({ client, index }) => {
+interface AnimatedClientCardProps {
+  client: ClientDataType;
+  index: number;
+}
+
+const AnimatedClientCard: React.FC<AnimatedClientCardProps> = ({
+  client,
+  index,
+}) => {
   const { ref, isInView } = useInView({ threshold: 0.2 });
 
   const infoItems = [
@@ -183,12 +216,10 @@ const AnimatedClientCard = ({ client, index }) => {
 
   return (
     <div
-      ref={ref}
+      ref={ref as RefObject<HTMLDivElement>}
       className={`flex flex-col md:flex-row items-center mb-24 backdrop-blur-sm p-6 rounded-xl
         transition-all duration-700 ease-out
-        ${
-          isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
-        } inner-gradient-glow`}
+        ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"} inner-gradient-glow`}
       style={{
         boxShadow:
           index % 2 === 0
@@ -197,27 +228,19 @@ const AnimatedClientCard = ({ client, index }) => {
         transitionDelay: "100ms",
       }}
     >
-      {/* Info Section with staggered text animations */}
-      <div className="flex-1 text-white text-left p-4 md:mr-10 w-full md:w-auto mb-6 md:mb-0 ">
+      {/* Info Section */}
+      <div className="flex-1 text-white text-left p-4 md:mr-10 w-full md:w-auto mb-6 md:mb-0">
         {infoItems.map((item, i) => (
           <div key={item.label} className="overflow-hidden">
             <p
               className={`text-xl sm:text-2xl font-light leading-relaxed
                 transition-all duration-600 ease-out
-                ${
-                  isInView
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
-                }`}
+                ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${200 + i * 150}ms` }}
             >
               <span
                 className={`text-lime-400 inline-block transition-all duration-500
-                  ${
-                    isInView
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-4"
-                  }`}
+                  ${isInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"}`}
                 style={{ transitionDelay: `${250 + i * 150}ms` }}
               >
                 {item.label} :
@@ -241,83 +264,34 @@ const AnimatedClientCard = ({ client, index }) => {
 };
 
 // --- Main Component ---
-const ClientFeedback = () => {
-  const { ref: headerRef, isInView: headerInView } = useInView({
-    threshold: 0.3,
-  });
+const ClientFeedback: React.FC = () => {
+  const { ref: headerRef, isInView: headerInView } = useInView({ threshold: 0.3 });
 
   return (
     <div className="relative bg-black min-h-screen">
-      {/* Rings background with lime-400 gradient */}
+      {/* Rings background */}
       <div className="fixed inset-0 pointer-events-none">
-        {/* Concentric rings effect */}
         <div className="absolute inset-0">
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <radialGradient
-                id="ringGradient"
-                cx="50%"
-                cy="50%"
-                r="50%"
-                fx="50%"
-                fy="50%"
-              >
+              <radialGradient id="ringGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                 <stop offset="0%" stopColor="#84cc16" stopOpacity="0.1" />
                 <stop offset="100%" stopColor="#84cc16" stopOpacity="0" />
               </radialGradient>
             </defs>
 
-            {/* Center ring */}
-            <circle
-              cx="50%"
-              cy="50%"
-              r="300"
-              fill="none"
-              stroke="url(#ringGradient)"
-              strokeWidth="1"
-              opacity="0.2"
-            />
-
-            {/* Larger rings */}
-            <circle
-              cx="50%"
-              cy="50%"
-              r="500"
-              fill="none"
-              stroke="url(#ringGradient)"
-              strokeWidth="1"
-              opacity="0.15"
-            />
-            <circle
-              cx="50%"
-              cy="50%"
-              r="700"
-              fill="none"
-              stroke="url(#ringGradient)"
-              strokeWidth="2"
-              opacity="0.1"
-            />
-
-            {/* Smaller ring */}
-            <circle
-              cx="50%"
-              cy="50%"
-              r="100"
-              fill="none"
-              stroke="url(#ringGradient)"
-              strokeWidth="1"
-              opacity="0.25"
-            />
+            <circle cx="50%" cy="50%" r="300" fill="none" stroke="url(#ringGradient)" strokeWidth={1} opacity={0.2} />
+            <circle cx="50%" cy="50%" r="500" fill="none" stroke="url(#ringGradient)" strokeWidth={1} opacity={0.15} />
+            <circle cx="50%" cy="50%" r="700" fill="none" stroke="url(#ringGradient)" strokeWidth={2} opacity={0.1} />
+            <circle cx="50%" cy="50%" r="100" fill="none" stroke="url(#ringGradient)" strokeWidth={1} opacity={0.25} />
           </svg>
         </div>
       </div>
 
       {/* Content wrapper */}
       <div className="relative z-10 container mx-auto py-10 px-4 sm:px-10 lg:px-20">
-        {/* Optional: Add a section header with animation */}
-        <div ref={headerRef} className="mb-16 text-center"></div>
+        <div ref={headerRef as RefObject<HTMLDivElement>} className="mb-16 text-center"></div>
 
-        {/* Client Cards with individual animations */}
         {clientData.map((client, index) => (
           <AnimatedClientCard key={client.name} client={client} index={index} />
         ))}

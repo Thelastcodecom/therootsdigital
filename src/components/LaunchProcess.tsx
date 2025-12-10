@@ -1,14 +1,25 @@
+"use client";
+
 import React from "react";
 
-// Sample data for the three steps
-const stepsData = [
+// --- Step Data Type ---
+interface StepData {
+  step: number;
+  title: string;
+  image: string;
+  description: string;
+  time: string;
+  desktopTransform: string;
+}
+
+const stepsData: StepData[] = [
   {
     step: 1,
     title: "Questionnaire",
     image: "/images/steps/step 1.webp",
     description: "Complete our online questionnaire",
     time: "15-30 min",
-    desktopTransform: "translateY(0%)",
+    desktopTransform: "0%",
   },
   {
     step: 2,
@@ -16,7 +27,7 @@ const stepsData = [
     image: "/images/steps/step 2.webp",
     description: "We build your website fully, from A to Z",
     time: "7 days",
-    desktopTransform: "translateY(5%)",
+    desktopTransform: "5%",
   },
   {
     step: 3,
@@ -24,12 +35,17 @@ const stepsData = [
     image: "/images/steps/step 3.webp",
     description: "We launch your website with you live over Zoom",
     time: "30 min",
-    desktopTransform: "translateY(10%)",
+    desktopTransform: "10%",
   },
 ];
 
-// Sample data for the logos
-const mockLogos = [
+// --- Logo Data Type ---
+interface LogoData {
+  name: string;
+  color: string;
+}
+
+const mockLogos: LogoData[] = [
   { name: "ONE STOP HOME REPAIRS", color: "#000000" },
   { name: "MY FINANCIAL", color: "#000000" },
   { name: "GREEN ORCHARDS", color: "#000000" },
@@ -42,12 +58,14 @@ const mockLogos = [
   { name: "ONE STOP HOME REPAIRS", color: "#000000" },
 ];
 
-/**
- * Helper component for individual logo cards
- */
-const LogoCard = ({ logo, isLimeBanner }) => (
-  <div className="flex-shrink-0 min-w-[200px] mx-6 flex flex-col items-center justify-center text-center">
-    {/* Placeholder Icon/Logo */}
+// --- LogoCard Props ---
+interface LogoCardProps {
+  logo: LogoData;
+  isLimeBanner: boolean;
+}
+
+const LogoCard: React.FC<LogoCardProps> = ({ logo, isLimeBanner }) => (
+  <div className="shrink-0 min-w-[200px] mx-6 flex flex-col items-center justify-center text-center">
     <div
       className="w-10 h-10 rounded-full border-2 mb-2 flex items-center justify-center"
       style={{
@@ -60,8 +78,6 @@ const LogoCard = ({ logo, isLimeBanner }) => (
         {logo.name[0]}
       </span>
     </div>
-
-    {/* Logo Name/Tagline */}
     <p className="text-[10px] font-semibold uppercase text-black whitespace-nowrap">
       {logo.name}
     </p>
@@ -69,10 +85,14 @@ const LogoCard = ({ logo, isLimeBanner }) => (
   </div>
 );
 
-/**
- * MarqueeBand Component - Improved version with full-width coverage
- */
-const MarqueeBand = ({ direction, rotation, isLimeBanner }) => {
+// --- MarqueeBand Props ---
+interface MarqueeBandProps {
+  direction: "left" | "right";
+  rotation: number;
+  isLimeBanner: boolean;
+}
+
+const MarqueeBand: React.FC<MarqueeBandProps> = ({ direction, rotation, isLimeBanner }) => {
   const animationName = direction === "left" ? "marqueeLeft" : "marqueeRight";
   const duration = direction === "left" ? "35s" : "40s";
 
@@ -102,32 +122,23 @@ const MarqueeBand = ({ direction, rotation, isLimeBanner }) => {
           animation: `${animationName} ${duration} linear infinite`,
         }}
       >
-        {/* Quadruple the logos for seamless infinite scroll */}
         {[...mockLogos, ...mockLogos, ...mockLogos, ...mockLogos].map((logo, index) => (
-          <LogoCard
-            key={`logo-${index}`}
-            logo={logo}
-            isLimeBanner={isLimeBanner}
-          />
+          <LogoCard key={`logo-${index}`} logo={logo} isLimeBanner={isLimeBanner} />
         ))}
       </div>
     </div>
   );
 };
 
-/**
- * LaunchProcessAndMarquee Component
- */
-const LaunchProcessAndMarquee = () => {
+// --- Main Component ---
+const LaunchProcessAndMarquee: React.FC = () => {
   return (
     <div className="bg-black text-white py-20 font-inter">
-      {/* --- Section 1: 3 Steps to Launch Your Website --- */}
+      {/* Steps Section */}
       <div className="px-4 text-center mb-24 container mx-auto">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-16">
           3 steps to launch your website
         </h2>
-
-        {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stepsData.map((step) => (
             <div
@@ -139,9 +150,7 @@ const LaunchProcessAndMarquee = () => {
                 backgroundOrigin: "padding-box, border-box",
               }}
             >
-              {/* Inner Content Card */}
               <div className="p-6 bg-black rounded-xl h-full flex flex-col items-center">
-                {/* Image/Preview Area */}
                 <div className="w-full h-40 mb-6 bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
                   <img
                     src={step.image}
@@ -149,16 +158,10 @@ const LaunchProcessAndMarquee = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-
-                {/* Step Marker */}
                 <h4 className="text-xl font-bold text-lime-accent mb-2">
                   STEP {step.step}
                 </h4>
-
-                {/* Description and Time */}
-                <p className="text-lg font-semibold text-white mb-1 mt-4">
-                  {step.description}
-                </p>
+                <p className="text-lg font-semibold text-white mb-1 mt-4">{step.description}</p>
                 <p className="text-md text-gray-400">{step.time}</p>
               </div>
             </div>
@@ -166,46 +169,23 @@ const LaunchProcessAndMarquee = () => {
         </div>
       </div>
 
-      {/* --- Section 2: X-shaped Scrolling Logo Banners --- */}
+      {/* Marquee Section */}
       <div className="w-full relative h-48 md:h-64 overflow-hidden">
-        
-        {/* Band 1: Lime Banner - Rotates Left-Down */}
         <div className="absolute w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-[70%] md:-translate-y-[60%] z-20">
-          {/* Desktop: Rotated */}
           <div className="hidden md:block">
-            <MarqueeBand
-              direction="left"
-              rotation={-3}
-              isLimeBanner={true}
-            />
+            <MarqueeBand direction="left" rotation={-3} isLimeBanner={true} />
           </div>
-          {/* Mobile: Straight */}
           <div className="block md:hidden">
-            <MarqueeBand
-              direction="left"
-              rotation={0}
-              isLimeBanner={true}
-            />
+            <MarqueeBand direction="left" rotation={0} isLimeBanner={true} />
           </div>
         </div>
 
-        {/* Band 2: White Banner - Rotates Right-Down */}
         <div className="absolute w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-[30%] md:-translate-y-[40%] z-10">
-          {/* Desktop: Rotated */}
           <div className="hidden md:block">
-            <MarqueeBand
-              direction="right"
-              rotation={3}
-              isLimeBanner={false}
-            />
+            <MarqueeBand direction="right" rotation={3} isLimeBanner={false} />
           </div>
-          {/* Mobile: Straight */}
           <div className="block md:hidden">
-            <MarqueeBand
-              direction="right"
-              rotation={0}
-              isLimeBanner={false}
-            />
+            <MarqueeBand direction="right" rotation={0} isLimeBanner={false} />
           </div>
         </div>
       </div>

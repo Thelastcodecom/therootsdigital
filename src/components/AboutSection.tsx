@@ -232,7 +232,7 @@ const ValueSection: React.FC = () => {
         >
           {/* TEXT LAYER */}
           <div
-            ref={textLayerRef}
+            ref={textLayerRef as RefObject<HTMLDivElement>}
             className="absolute inset-0 z-0 flex flex-col items-center justify-center select-none pointer-events-none"
           >
             <div className="flex justify-between w-full px-4 lg:px-0">
@@ -282,7 +282,7 @@ const ValueSection: React.FC = () => {
 
           {/* ASTRONAUT */}
           <div
-            ref={astronautRef}
+            ref={astronautRef as RefObject<HTMLDivElement>}
             className={`relative z-10 w-full h-full flex items-center justify-center transition-all duration-1000 ${
               astronautInView
                 ? "opacity-100 translate-y-0 scale-100"

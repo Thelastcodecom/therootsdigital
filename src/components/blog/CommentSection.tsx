@@ -9,20 +9,27 @@ export default function CommentSection() {
     saveInfo: false,
   });
 
-  const handleSubmit = (e) => {
+  // Submit handler
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Comment submitted:", formData);
     // Handle form submission
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+  // Change handler
+  const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const target = e.target as HTMLInputElement | HTMLTextAreaElement;
 
+  const name = target.name;
+  const value = target.type === "checkbox" ? (target as HTMLInputElement).checked : target.value;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
   return (
     <div className="bg-black text-white min-h-screen flex items-center justify-center p-6">
       <div className="w-full max-w-4xl border border-l-0 border-[#242424] rounded-lg p-8 md:p-12">
@@ -35,15 +42,12 @@ export default function CommentSection() {
         </p>
 
         {/* Form */}
-        <div className="space-y-8">
+        <form className="space-y-8" onSubmit={handleSubmit}>
           {/* Name and Email Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Name Field */}
             <div>
-              <label
-                htmlFor="name"
-                className="block text-gray-300 text-sm mb-3"
-              >
+              <label htmlFor="name" className="block text-gray-300 text-sm mb-3">
                 Name*
               </label>
               <input
@@ -59,10 +63,7 @@ export default function CommentSection() {
 
             {/* Email Field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-gray-300 text-sm mb-3"
-              >
+              <label htmlFor="email" className="block text-gray-300 text-sm mb-3">
                 Email*
               </label>
               <input
@@ -79,10 +80,7 @@ export default function CommentSection() {
 
           {/* Website Field */}
           <div>
-            <label
-              htmlFor="website"
-              className="block text-gray-300 text-sm mb-3"
-            >
+            <label htmlFor="website" className="block text-gray-300 text-sm mb-3">
               Website
             </label>
             <input
@@ -105,21 +103,14 @@ export default function CommentSection() {
               onChange={handleChange}
               className="mt-1 w-4 h-4 bg-transparent border border-gray-600 rounded accent-lime-400 cursor-pointer"
             />
-            <label
-              htmlFor="saveInfo"
-              className="text-gray-300 text-sm cursor-pointer"
-            >
-              Save my name, email, and website in this browser for the next time
-              I comment.
+            <label htmlFor="saveInfo" className="text-gray-300 text-sm cursor-pointer">
+              Save my name, email, and website in this browser for the next time I comment.
             </label>
           </div>
 
           {/* Comment Field */}
           <div>
-            <label
-              htmlFor="comment"
-              className="block text-gray-300 text-sm mb-3"
-            >
+            <label htmlFor="comment" className="block text-gray-300 text-sm mb-3">
               Your Comment*
             </label>
             <textarea
@@ -136,13 +127,13 @@ export default function CommentSection() {
           {/* Submit Button */}
           <div>
             <button
-              onClick={handleSubmit}
+              type="submit"
               className="bg-lime-400 text-black px-12 py-4 font-semibold text-sm tracking-wider hover:bg-lime-500 transition-colors"
             >
               Post Comment
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
