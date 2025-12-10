@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 
-// --- Interfaces ---
 interface Testimonial {
   id: number;
   text: string;
@@ -20,7 +19,6 @@ interface TestimonialCardProps {
   isActive: boolean;
 }
 
-// --- Component ---
 const TestimonialSection: React.FC = () => {
   const testimonials: Testimonial[] = [
     {
@@ -128,9 +126,7 @@ const TestimonialSection: React.FC = () => {
 
   useEffect(() => {
     const updateWidth = () => {
-      if (sliderRef.current) {
-        setContainerWidth(sliderRef.current.offsetWidth);
-      }
+      if (sliderRef.current) setContainerWidth(sliderRef.current.offsetWidth);
     };
     updateWidth();
     window.addEventListener("resize", updateWidth);
@@ -168,6 +164,7 @@ const TestimonialSection: React.FC = () => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => prev + 1);
     }, 4000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -175,7 +172,7 @@ const TestimonialSection: React.FC = () => {
   const handleNext = () => setActiveIndex((prev) => prev + 1);
   const handleDotClick = (index: number) => setActiveIndex(index);
 
-  const getRealIndex = (): number => {
+  const getRealIndex = () => {
     if (activeIndex < 0) return totalSlides + activeIndex;
     if (activeIndex >= totalSlides) return activeIndex - totalSlides;
     return activeIndex;
@@ -213,7 +210,40 @@ const TestimonialSection: React.FC = () => {
   return (
     <section className="w-full min-h-[80vh] bg-zinc-900 overflow-hidden">
       <div className="container mx-auto px-4 md:px-8 py-16 md:py-24">
-        {/* Slider Section */}
+        {/* TOP SECTION */}
+        <div
+          className="relative p-8 md:p-12 lg:p-20 rounded-xl overflow-hidden
+             bg-linear-to-r from-lime-400/60 to-zinc-900/95 
+             shadow-2xl shadow-lime-400/20"
+        >
+          <div className="absolute inset-0 bg-linear-to-l from-zinc-900 to-transparent z-0"></div>
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex justify-center lg:justify-start w-full lg:w-1/3 mb-10 lg:mb-0">
+              <img
+                src="/images/testimonial/trustpilot.webp"
+                alt="Trustpilot"
+                className="w-40 md:w-52 lg:w-64 object-contain"
+              />
+            </div>
+            <div className="text-center lg:text-left w-full lg:w-2/3">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight max-w-3xl">
+                I was impressed how smooth the whole process was with them. They
+                have been proactive to resolve my concerns in a timely manner.
+              </h2>
+              <div className="mt-8 text-white">
+                <p className="text-base font-semibold">Source: Every TRD Customer</p>
+                <p className="text-xl font-bold mt-1">Rated 4.8 Excellent</p>
+                <img
+                  src="/images/testimonial/stars.png"
+                  alt="stars"
+                  className="w-40 md:w-48 mt-2"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SLIDER SECTION */}
         <div className="mt-12 md:mt-16 relative">
           <button
             onClick={handlePrev}
@@ -222,6 +252,7 @@ const TestimonialSection: React.FC = () => {
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
+
           <button
             onClick={handleNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"
@@ -230,7 +261,10 @@ const TestimonialSection: React.FC = () => {
             <ChevronRight className="w-6 h-6" />
           </button>
 
-          <div ref={sliderRef} className="overflow-hidden mx-8 md:mx-12 relative">
+          <div ref={sliderRef} className="overflow-hidden mx-8 md:mx-12">
+            <div className="absolute left-8 md:left-12 top-0 bottom-0 w-16 md:w-24 bg-liner-to-r from-zinc-900 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-8 md:right-12 top-0 bottom-0 w-16 md:w-24 bg-linear-to-l from-zinc-900 to-transparent z-10 pointer-events-none"></div>
+
             <div
               className={`flex py-4 ${isTransitioning ? "transition-transform duration-500 ease-out" : ""}`}
               style={{ transform: `translateX(${getTransformValue()}px)` }}
@@ -253,22 +287,21 @@ const TestimonialSection: React.FC = () => {
                 );
               })}
             </div>
+          </div>
 
-            {/* Slider Dots */}
-            <div className="flex justify-center mt-10 space-x-2 flex-wrap gap-y-2">
-              {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleDotClick(i)}
-                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    getRealIndex() === i
-                      ? "bg-lime-400 w-8"
-                      : "bg-gray-700 hover:bg-lime-400/50 w-2.5"
-                  }`}
-                  aria-label={`Go to testimonial ${i + 1}`}
-                ></button>
-              ))}
-            </div>
+          <div className="flex justify-center mt-10 space-x-2 flex-wrap gap-y-2">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => handleDotClick(i)}
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  getRealIndex() === i
+                    ? "bg-lime-400 w-8"
+                    : "bg-gray-700 hover:bg-lime-400/50 w-2.5"
+                }`}
+                aria-label={`Go to testimonial ${i + 1}`}
+              ></button>
+            ))}
           </div>
         </div>
       </div>
