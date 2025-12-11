@@ -226,7 +226,7 @@ const TestimonialSection: React.FC = () => {
               />
             </div>
             <div className="text-center lg:text-left w-full lg:w-2/3">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight max-w-3xl">
+              <h2 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white leading-tight tracking-tight max-w-3xl">
                 I was impressed how smooth the whole process was with them. They
                 have been proactive to resolve my concerns in a timely manner.
               </h2>
@@ -244,7 +244,7 @@ const TestimonialSection: React.FC = () => {
         </div>
 
         {/* SLIDER SECTION */}
-        <div className="mt-12 md:mt-16 relative">
+        <div className="mt-4 md:mt-16 relative">
           <button
             onClick={handlePrev}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"

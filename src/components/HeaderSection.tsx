@@ -21,6 +21,7 @@ const Navbar = () => {
   );
   const [show16171B, setShow16171B] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleScroll = useCallback(() => {
     const currentScrollPos = window.scrollY;
@@ -56,6 +57,15 @@ const Navbar = () => {
       return `${base} ${isActive ? "text-lime-accent" : "text-white"}`;
     } else {
       return `${base} ${isActive ? "text-lime-accent" : "text-white"}`;
+    }
+  };
+
+  const handleToggleClick = () => {
+    if (window.innerWidth >= 768) {
+      // md breakpoint
+      setIsSidebarOpen(!isSidebarOpen);
+    } else {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
     }
   };
 
@@ -142,7 +152,7 @@ const Navbar = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.05 }}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={handleToggleClick}
               className="bg-lime-accent p-3 rounded-full hover:bg-opacity-90 transition duration-300 focus:outline-none"
               aria-label="Toggle Menu"
             >
@@ -209,7 +219,7 @@ const Navbar = () => {
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ scale: 1.05 }}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={handleToggleClick}
                 className="bg-lime-accent p-3 rounded-full hover:bg-opacity-90 transition duration-300 focus:outline-none"
                 aria-label="Toggle Menu"
               >
@@ -274,6 +284,108 @@ const Navbar = () => {
             </Link>
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* Sidebar Overlay (Large screens only) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isSidebarOpen ? 0.5 : 0 }}
+        transition={{ duration: 0.3 }}
+        className={`hidden md:block fixed inset-0 bg-black z-40 ${
+          isSidebarOpen ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+        onClick={() => setIsSidebarOpen(false)}
+      />
+
+      {/* Sidebar (Large screens only - 1/3 width) */}
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: isSidebarOpen ? "0%" : "100%" }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="hidden md:block fixed top-0 right-0 h-full w-1/3 bg-gradient-to-b from-gray-800 to-gray-900 text-white z-50"
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => setIsSidebarOpen(false)}
+          className="absolute top-8 right-8 text-gray-400 hover:text-white transition"
+        >
+          <svg
+            className="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+
+        {/* Sidebar Content */}
+        <div className="p-12 pt-24 space-y-12">
+          {/* Brief us Section */}
+          <div>
+            <h2 className="text-3xl font-light mb-6">Brief us</h2>
+            <p className="text-gray-400 mb-2">info@therootsdigital.com</p>
+            <p className="text-gray-400">tel: 727-334-6567</p>
+          </div>
+
+          {/* Our Office Section */}
+          <div>
+            <h2 className="text-3xl font-light mb-6">Our Office</h2>
+            <p className="text-gray-400">
+              7901 4th Street, Saint Petersburg, FL, United States, Florida
+            </p>
+          </div>
+
+          {/* Follow us Section */}
+          <div>
+            <h2 className="text-3xl font-light mb-6">Follow us</h2>
+            <div className="flex gap-6">
+              <a
+                href="#"
+                className="flex items-center gap-2 text-gray-400 hover:text-lime-accent transition"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 17L17 7M17 7H7M17 7V17"
+                  />
+                </svg>
+                <span>Instagram</span>
+              </a>
+              <a
+                href="#"
+                className="flex items-center gap-2 text-gray-400 hover:text-lime-accent transition"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 17L17 7M17 7H7M17 7V17"
+                  />
+                </svg>
+                <span>Facebook</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </>
   );

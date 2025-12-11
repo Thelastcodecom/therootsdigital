@@ -182,7 +182,9 @@ const ScrollRevealSection = () => {
               {mockImages.map((item, index) => (
                 <div
                   key={item.id}
-                  ref={(el) => { cardRefs.current[index] = el }}
+                  ref={(el) => {
+                    cardRefs.current[index] = el;
+                  }}
                   className="absolute bottom-8 left-1/2 w-[55%] max-w-[280px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
                   style={{
                     transformOrigin: "bottom center",
@@ -204,6 +206,5 @@ const ScrollRevealSection = () => {
     </section>
   );
 };
-
 
 export default ScrollRevealSection;

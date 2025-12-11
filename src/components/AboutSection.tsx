@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 type Tab = "mission" | "vision" | "value";
+
+const tabs: Tab[] = ["mission", "vision", "value"];
 
 const content: Record<Tab, React.ReactNode> = {
   mission: (
@@ -20,9 +22,9 @@ const content: Record<Tab, React.ReactNode> = {
         We craft human-centered journeys that connect, inspire, and deliver
         measurable impact. From creative design and branding to smart
         development and strategy, we create solutions that drive real growth. In
-        a constantly changing world, we blend creativity with
-        <span className="text-lime-accent">innovation</span> to help brands
-        stand out with purpose and progress.
+        a constantly changing world, we blend creativity with{" "}
+        <span className="text-lime-accent">innovation</span>
+        to help brands stand out with purpose and progress.
       </p>
     </>
   ),
@@ -68,45 +70,49 @@ const content: Record<Tab, React.ReactNode> = {
   ),
 };
 
-// Framer Motion variants
-const tabVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.15, duration: 0.6, ease: "easeOut" },
-  }),
-};
-
-const contentVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
-};
-
 const ValueSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("value");
+  const [activeTab, setActiveTab] = useState<Tab>("mission");
   const [isHovered, setIsHovered] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   return (
     <section className="w-full bg-black text-white py-15 relative overflow-hidden container mx-auto">
       <div className="relative z-10 px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        {/* LEFT SIDE CONTENT */}
-        <div className="w-full md:w-130 border p-10 lg:p-14 rounded-xl bg-gradient-to-b from-gray-900/60 to-gray-900/30 backdrop-blur-md">
-          {/* Tabs */}
-          <div className="flex text-gray-400 gap-16 text-lg font-medium mb-10 ">
-            {(["mission", "vision", "value"] as Tab[]).map((tab, i) => (
+        {/* LEFT SIDE */}
+        <div className="relative w-full md:w-130 rounded-xl bg-transparent shadow-lg">
+          {/* TABS */}
+          <div className="relative flex mb-0">
+            <motion.div
+              layoutId="tabGlider"
+              className="absolute h-[4px] rounded-b-md top-full shadow-[0_0_10px_rgba(120,255,100,0.7)]"
+              style={{
+                width: "33.3333%",
+                left:
+                  activeTab === "mission"
+                    ? "0%"
+                    : activeTab === "vision"
+                    ? "33.3333%"
+                    : "66.6666%",
+                background: "linear-gradient(90deg,#a3e635,#84cc16)",
+              }}
+              transition={{ type: "spring", stiffness: 250, damping: 20 }}
+            />
+
+            {tabs.map((tab) => (
               <motion.button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: false, amount: 0.2 }}
-                variants={tabVariants}
-                className={`transition-all duration-700 ${
-                  activeTab === tab ? "text-white" : "hover:text-white"
-                }`}
+                className={`
+                  w-1/3 py-2 text-xs font-semibold uppercase tracking-[0.15em]
+                  rounded-t-md border-t border-[#3b3d3f]
+                  bg-transparent text-[#e7e9f5]
+                  transition-all
+                  ${
+                    activeTab === tab
+                      ? "text-white shadow-md"
+                      : "hover:text-white"
+                  }
+                `}
               >
                 {tab === "mission"
                   ? "OUR MISSION"
@@ -117,16 +123,26 @@ const ValueSection: React.FC = () => {
             ))}
           </div>
 
-          {/* Tab Content */}
-          <motion.div
-            key={activeTab}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
-            variants={contentVariants}
-          >
-            {content[activeTab]}
-          </motion.div>
+          {/* CONTENT BOX WITH FIXED HEIGHT + SMOOTH TRANSITION */}
+          <div className="relative border border-t-0 border-[#3b3d3f] rounded-b-md p-6 overflow-auto md:overflow-hidden">
+            <motion.div
+              layout
+              className="relative min-h-[400px]" // FIXED HEIGHT
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.35 }}
+                  className="absolute top-0 left-0 w-full text-[#f0f2fc] leading-7 text-[15px] tracking-wide"
+                >
+                  {content[activeTab]}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </div>
         </div>
 
         {/* RIGHT SIDE IMAGE */}
@@ -146,12 +162,10 @@ const ValueSection: React.FC = () => {
             setTilt({ x: rotateX, y: rotateY });
           }}
         >
-          {/* Background image under astronaut */}
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{ duration: 1 }}
             className="absolute inset-0 z-0 flex items-center justify-center"
           >
             <Image
@@ -163,12 +177,10 @@ const ValueSection: React.FC = () => {
             />
           </motion.div>
 
-          {/* Astronaut image */}
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{ duration: 1 }}
             className="relative z-10 w-full h-full flex items-center justify-center"
           >
             <Image

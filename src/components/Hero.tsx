@@ -4,58 +4,64 @@ import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 
 const Hero = () => {
-  // Variants for the three headline lines
+  // Headline animation
   const headlineVariants: Variants = {
-    hidden: { opacity: 0, x: -50 },
+    hidden: { opacity: 0, x: -40 },
     visible: (i: number) => ({
       opacity: 1,
       x: 0,
-      transition: { delay: 0.5 + i * 0.3, duration: 0.7, ease: "easeOut" },
+      transition: { delay: 0.5 + i * 0.2, duration: 0.6 },
     }),
   };
 
-  // Variant for logo: fade + slide + slight shake
+  // Logo animation
   const logoVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 40 },
     visible: {
       opacity: 1,
       y: 0,
-      rotate: [-5, 5, -5, 0], // shake effect once
-      transition: { delay: 1.5, duration: 1.2, ease: "easeInOut" },
+      rotate: [-4, 4, -4, 0],
+      transition: { delay: 1.2, duration: 1 },
     },
   };
 
-  // Variant for about heading & texts
+  // About text animation
   const aboutVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: 1.7 + i * 0.2, duration: 0.7, ease: "easeOut" },
+      transition: { delay: 1.5 + i * 0.15, duration: 0.6 },
     }),
   };
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-between bg-black overflow-hidden">
-      {/* --- Background Video --- */}
-      <video
-        className="absolute top-0 left-0 w-full h-[77%] object-cover z-0"
-        autoPlay
-        loop
-        muted
-        playsInline
-      >
-        <source
-          src="https://therootsdigital.com/wp-content/uploads/2025/10/Untitled-design.mp4"
-          type="video/mp4"
-        />
-        Your browser does not support the video tag.
-      </video>
+    <section className="relative w-full h-screen overflow-hidden bg-black">
+      {/* ===========================
+          BACKGROUND VIDEO
+      ============================ */}
+      <div className="absolute inset-0 h-[75vh] w-full">
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source
+            src="https://therootsdigital.com/wp-content/uploads/2025/10/Untitled-design.mp4"
+            type="video/mp4"
+          />
+        </video>
+      </div>
 
-      {/* --- Left-aligned Headline --- */}
-      <div className="relative z-20 h-full mt-auto w-full container px-4 md:px-8 flex flex-col justify-between pt-40 pb-8 md:pb-16">
-        <div className="max-w-4xl flex-grow flex items-start">
-          <h2 className="text-5xl md:text-7xl lg:text-8xl tracking-wide font-bold leading-none text-lime-accent">
+      {/* ===========================
+          DESKTOP HERO (md+)
+      ============================ */}
+      <div className="hidden md:flex relative z-20 flex-col h-full justify-between">
+        {/* Headline */}
+        <div className="pt-40 pl-16">
+          <h2 className="text-5xl lg:text-7xl xl:text-8xl font-bold leading-none text-lime-accent">
             {["Rethink", "Reinvent", "Revolutionize"].map((word, i) => (
               <motion.span
                 key={word}
@@ -70,67 +76,134 @@ const Hero = () => {
             ))}
           </h2>
         </div>
-      </div>
 
-      {/* --- Centered Image + About Text --- */}
-      <div className="relative z-20 w-full px-4 md:px-8">
-        <div className="flex flex-col md:flex-row items-end justify-center gap-8 md:gap-16 max-w-xl mx-auto md:pb-12">
-          {/* --- Image --- */}
+        {/* Logo + About Section */}
+        <div className="relative w-full flex items-end justify-center md:gap-8 gap-12 pb-12">
+          {/* Logo */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={logoVariants}
-            className="shrink-0 flex items-center justify-center"
+            className="-mt-40 shrink-0"
           >
             <Image
               src="/images/b_logo.webp"
-              alt="About Us Graphic"
-              width={1000}
-              height={1200}
-              className="w-full 
-                max-w-[24rem] 
-                sm:max-w-[28rem] 
-                md:max-w-[36rem] 
-                lg:max-w-[44rem] 
-                h-auto object-contain 
-                lg:mb-7"
+              alt="Brand Logo"
+              width={600}
+              height={600}
+              className="h-[26rem] md:h-[22rem] w-auto object-contain"
               priority
             />
           </motion.div>
 
-          {/* --- About Text --- */}
-          <div className="flex flex-col items-end md:items-start text-white text-center md:text-left">
-            {[
-              {
-                ref: "aboutHeading",
-                text: "ABOUT THE ROOTS DIGITAL",
-                className:
-                  "relative text-base font-bold text-gray-400 mb-4 pl-6 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:rounded-full before:bg-lime-accent",
-              },
-              {
-                ref: "aboutText1",
-                text: "CRAFTING DIGITAL",
-                className:
-                  "text-4xl md:text-5xl lg:text-6xl uppercase leading-tight whitespace-nowrap",
-              },
-              {
-                ref: "aboutText2",
-                text: "EXCELLENCE",
-                className:
-                  "text-4xl md:text-5xl lg:text-6xl uppercase leading-tight text-[#868686]",
-              },
-            ].map((item, i) => (
-              <motion.h2
-                key={item.ref}
+          {/* Text */}
+          <div className="flex flex-col items-start text-white">
+            <motion.h2
+              custom={0}
+              initial="hidden"
+              animate="visible"
+              variants={aboutVariants}
+              className="relative text-sm font-bold text-gray-300 mb-3 pl-6
+                before:content-[''] before:w-2 before:h-2 before:bg-lime-accent
+                before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:rounded-full"
+            >
+              ABOUT THE ROOTS DIGITAL
+            </motion.h2>
+
+            <motion.h2
+              custom={1}
+              initial="hidden"
+              animate="visible"
+              variants={aboutVariants}
+              className="text-4xl xl:text-6xl uppercase font-bold lg:whitespace-nowrap"
+            >
+              CRAFTING DIGITAL
+            </motion.h2>
+
+            <motion.h2
+              custom={2}
+              initial="hidden"
+              animate="visible"
+              variants={aboutVariants}
+              className="text-4xl xl:text-6xl uppercase text-[#868686]"
+            >
+              EXCELLENCE
+            </motion.h2>
+          </div>
+        </div>
+      </div>
+
+      {/* ===========================
+          MOBILE HERO (sm)
+      ============================ */}
+      <div className="md:hidden relative z-20 flex flex-col h-full justify-end">
+        {/* Headline - Mobile */}
+        <div className="pt-32 px-4 text-center">
+          <h2 className="text-4xl font-bold leading-tight text-lime-accent">
+            {["Rethink", "Reinvent", "Revolutionize"].map((word, i) => (
+              <motion.span
+                key={word}
                 custom={i}
                 initial="hidden"
                 animate="visible"
-                variants={aboutVariants}
-                className={item.className}
+                variants={headlineVariants}
+                className="block"
               >
-                {item.text}
-              </motion.h2>
+                {word}
+              </motion.span>
             ))}
+          </h2>
+        </div>
+
+        {/* Black Section */}
+        <div className="w-full bg-black mt-6 pt-10 pb-12 flex flex-col items-center">
+          {/* Center Logo */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={logoVariants}
+            className="mb-6"
+          >
+            <Image
+              src="/images/b_logo.webp"
+              alt="Brand Logo"
+              width={400}
+              height={400}
+              className="h-40 w-auto object-contain"
+            />
+          </motion.div>
+
+          {/* About Text */}
+          <div className="flex flex-col items-center text-center text-white">
+            <motion.h2
+              custom={0}
+              initial="hidden"
+              animate="visible"
+              variants={aboutVariants}
+              className="text-xs font-bold text-gray-300 tracking-wide mb-2"
+            >
+              ABOUT THE ROOTS DIGITAL
+            </motion.h2>
+
+            <motion.h2
+              custom={1}
+              initial="hidden"
+              animate="visible"
+              variants={aboutVariants}
+              className="text-3xl uppercase font-bold"
+            >
+              CRAFTING DIGITAL
+            </motion.h2>
+
+            <motion.h2
+              custom={2}
+              initial="hidden"
+              animate="visible"
+              variants={aboutVariants}
+              className="text-3xl uppercase text-[#868686]"
+            >
+              EXCELLENCE
+            </motion.h2>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 // --- Step Data Type ---
 interface StepData {
@@ -81,7 +81,9 @@ const LogoCard: React.FC<LogoCardProps> = ({ logo, isLimeBanner }) => (
     <p className="text-[10px] font-semibold uppercase text-black whitespace-nowrap">
       {logo.name}
     </p>
-    <p className="text-[8px] text-black whitespace-nowrap">Partner Since &apos;23</p>
+    <p className="text-[8px] text-black whitespace-nowrap">
+      Partner Since &apos;23
+    </p>
   </div>
 );
 
@@ -92,7 +94,11 @@ interface MarqueeBandProps {
   isLimeBanner: boolean;
 }
 
-const MarqueeBand: React.FC<MarqueeBandProps> = ({ direction, rotation, isLimeBanner }) => {
+const MarqueeBand: React.FC<MarqueeBandProps> = ({
+  direction,
+  rotation,
+  isLimeBanner,
+}) => {
   const animationName = direction === "left" ? "marqueeLeft" : "marqueeRight";
   const duration = direction === "left" ? "35s" : "40s";
 
@@ -114,6 +120,20 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({ direction, rotation, isLimeBa
           0% { transform: translateX(-50%); }
           100% { transform: translateX(0); }
         }
+
+        /* scroll fade-up */
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(18px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-step-inner {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        .fade-step-inner.visible {
+          animation: fadeInUp 0.75s cubic-bezier(.22,.98,.38,1) forwards;
+        }
       `}</style>
 
       <div
@@ -122,9 +142,15 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({ direction, rotation, isLimeBa
           animation: `${animationName} ${duration} linear infinite`,
         }}
       >
-        {[...mockLogos, ...mockLogos, ...mockLogos, ...mockLogos].map((logo, index) => (
-          <LogoCard key={`logo-${index}`} logo={logo} isLimeBanner={isLimeBanner} />
-        ))}
+        {[...mockLogos, ...mockLogos, ...mockLogos, ...mockLogos].map(
+          (logo, index) => (
+            <LogoCard
+              key={`logo-${index}`}
+              logo={logo}
+              isLimeBanner={isLimeBanner}
+            />
+          )
+        )}
       </div>
     </div>
   );
@@ -132,6 +158,26 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({ direction, rotation, isLimeBa
 
 // --- Main Component ---
 const LaunchProcessAndMarquee: React.FC = () => {
+  const stepRefs = useRef<HTMLDivElement[]>([]);
+
+  // SCROLL OBSERVER
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    stepRefs.current.forEach((el) => el && observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="bg-black text-white py-20 font-inter">
       {/* Steps Section */}
@@ -139,18 +185,28 @@ const LaunchProcessAndMarquee: React.FC = () => {
         <h2 className="text-4xl md:text-5xl font-extrabold mb-16">
           3 steps to launch your website
         </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {stepsData.map((step) => (
+          {stepsData.map((step, i) => (
             <div
               key={step.step}
-              className="border-lime-accent border-2 rounded-2xl bg-gray-900 shadow-2xl transition duration-500 ease-out"
+              className="border-lime-accent border-2 rounded-2xl bg-gray-900 shadow-2xl"
               style={{
                 transform: `translateY(${step.desktopTransform})`,
                 backgroundClip: "padding-box, border-box",
                 backgroundOrigin: "padding-box, border-box",
               }}
             >
-              <div className="p-6 bg-black rounded-xl h-full flex flex-col items-center">
+              {/* INNER: scroll animation */}
+              <div
+                ref={(el) => {
+                  if (el) stepRefs.current[i] = el;
+                }}
+                className="p-6 bg-black rounded-xl h-full flex flex-col items-center fade-step-inner"
+                style={{
+                  animationDelay: `${i * 0.22}s`,
+                }}
+              >
                 <div className="w-full h-40 mb-6 bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
                   <img
                     src={step.image}
@@ -161,7 +217,9 @@ const LaunchProcessAndMarquee: React.FC = () => {
                 <h4 className="text-xl font-bold text-lime-accent mb-2">
                   STEP {step.step}
                 </h4>
-                <p className="text-lg font-semibold text-white mb-1 mt-4">{step.description}</p>
+                <p className="text-lg font-semibold text-white mb-1 mt-4">
+                  {step.description}
+                </p>
                 <p className="text-md text-gray-400">{step.time}</p>
               </div>
             </div>

@@ -41,7 +41,7 @@
   top: 3px;
   width: calc(100% - 6px);    /* 2 * border width */
   height: calc(100% - 6px);
-  background: #000;           /* match your section background */
+  background: #000;        /* match your section background */
   border-radius: inherit;
 }
 
@@ -74,7 +74,23 @@
   );
   animation: rotate 4s linear infinite;
 }
+/* when the button is active, make the inner fill lime and text black for readability */
+.tabButton[data-active="true"]::after {
+  background: #a3e635; /* lime-accent */
+}
 
+.tabButton[data-active="true"] {
+  color: #000; /* make text readable on lime bg */
+}
+
+/* optional: make the glow match better when active */
+.tabButton[data-active="true"] .glowBorder::before {
+  background-image: conic-gradient(
+    rgba(0,0,0,0),
+    #a3e635,
+    rgba(0,0,0,0) 25%
+  );
+}
 
 /* Spin animation */
 @keyframes rotate {

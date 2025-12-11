@@ -265,7 +265,7 @@ const AnimatedClientCard: React.FC<AnimatedClientCardProps> = ({
 
 // --- Main Component ---
 const ClientFeedback: React.FC = () => {
-  const { ref: headerRef, isInView: headerInView } = useInView({ threshold: 0.3 });
+  const { ref: headerRef } = useInView({ threshold: 0.3 });
 
   return (
     <div className="relative bg-black min-h-screen">

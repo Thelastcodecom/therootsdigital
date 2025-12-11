@@ -63,14 +63,6 @@ export default function PortfolioGrid() {
         type: "video",
         src: "/images/portfolio-images/video-editing/video 3.mp4",
       },
-      {
-        type: "video",
-        src: "/images/portfolio-images/video-editing/video 4.mp4",
-      },
-      {
-        type: "video",
-        src: "/images/portfolio-images/video-editing/video 5.mp4",
-      },
     ],
     "Video Animation": [
       {
@@ -165,7 +157,10 @@ export default function PortfolioGrid() {
             <motion.button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`${styles.tabButton} border border-lime-accent`}
+              data-active={activeTab === category} // ← add this
+              className={`${styles.tabButton} border border-lime-accent ${
+                activeTab === category ? "bg-lime-accent text-black" : ""
+              }`}
             >
               <span className={styles.glowBorder} />
               {category}
