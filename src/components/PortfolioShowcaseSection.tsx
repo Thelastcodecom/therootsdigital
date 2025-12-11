@@ -1,8 +1,8 @@
 "use client";
-
+import styles from "./PortfolioSection.module.css";
 import { useState } from "react";
 import Image from "next/image";
-import { Play } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 
 // Define the structure for a project item
 type ProjectItem = {
@@ -11,6 +11,18 @@ type ProjectItem = {
   poster?: string; // Thumbnail for videos
   title?: string; // Optional title for accessibility/overlay
 };
+
+// Scroll animation variants
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+};
+
+const headingVariants: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
+};
+
 
 export default function PortfolioGrid() {
   const [activeTab, setActiveTab] = useState("Web Design");
@@ -27,7 +39,6 @@ export default function PortfolioGrid() {
     "SEO",
   ];
 
-  // Updated Data Structure: Now uses objects with 'type'
   const projectsByCategory: Record<string, ProjectItem[]> = {
     "Web Design": [
       { type: "image", src: "/images/portfolio-images/web/web 1.webp" },
@@ -122,15 +133,14 @@ export default function PortfolioGrid() {
 
   const currentProjects = projectsByCategory[activeTab] || [];
 
-  // Helper to determine grid columns based on category
   const getGridClass = (category: string) => {
     switch (category) {
       case "Logo Design":
       case "Branding":
-        return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"; // Smaller cards, more columns
+        return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
       case "Web Design":
       case "Mobile App":
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"; // Taller cards
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
       default:
         return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
     }
@@ -138,26 +148,28 @@ export default function PortfolioGrid() {
 
   return (
     <section className="w-full container mx-auto py-16 md:py-24 bg-black">
-      <div className=" px-4 md:px-8 text-center">
-        {/* Title */}
-        <h2 className="text-5xl md:text-7xl lg:text-8xl text-white mb-10 font-bold tracking-tight">
+      <div className="px-4 md:px-8 text-center">
+        <motion.h2
+          className="text-5xl md:text-7xl lg:text-8xl text-white mb-10 font-bold tracking-tight"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.3 }}
+          variants={headingVariants}
+        >
           Creative Portfolio
-        </h2>
+        </motion.h2>
 
         {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-16 max-w-6xl mx-auto">
           {categories.map((category) => (
-            <button
+            <motion.button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`px-5 py-2 rounded-full text-sm md:text-lg font-medium transition-all duration-300 border border-lime-accent ${
-                activeTab === category
-                  ? "bg-lime-accent text-black shadow-[0_0_15px_rgba(163,230,53,0.5)]"
-                  : "bg-transparent text-gray-300 hover:bg-zinc-900 hover:text-white"
-              }`}
+              className={`${styles.tabButton} border border-lime-accent`}
             >
+              <span className={styles.glowBorder} />
               {category}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -166,12 +178,19 @@ export default function PortfolioGrid() {
           {currentProjects.length > 0 ? (
             <div className={`grid gap-8 ${getGridClass(activeTab)}`}>
               {currentProjects.map((item, index) => (
-                <PortfolioCard
+                <motion.div
                   key={index}
-                  category={activeTab}
-                  item={item}
-                  index={index}
-                />
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.3 }}
+                  variants={cardVariants}
+                >
+                  <PortfolioCard
+                    category={activeTab}
+                    item={item}
+                    index={index}
+                  />
+                </motion.div>
               ))}
             </div>
           ) : (
@@ -185,7 +204,7 @@ export default function PortfolioGrid() {
   );
 }
 
-// Sub-component to handle different card styles
+// ---- Keep your original PortfolioCard logic intact ----
 function PortfolioCard({
   category,
   item,
@@ -195,13 +214,11 @@ function PortfolioCard({
   item: ProjectItem;
   index: number;
 }) {
-  // 1. WEB DESIGN CARD (Long scrolling screenshot)
   if (category === "Web Design" || category === "Social Media Management") {
     return (
       <div className="group relative w-full h-[400px] md:h-[550px] rounded-2xl overflow-hidden border border-2 border-lime-accent bg-zinc-900">
         <div className="absolute inset-0 overflow-hidden">
           {item.type === "video" ? (
-            // If someone puts a video in Web Design, render video without controls, always playing
             <video
               src={item.src}
               className="w-full h-full object-cover"
@@ -224,13 +241,9 @@ function PortfolioCard({
     );
   }
 
-  // 2. VIDEO / ANIMATION CARD (Landscape thumbnail with auto-play by default)
   if (category === "Video Editing" || category === "Video Animation") {
     return (
-      <div
-        className="group relative w-full aspect-video rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 cursor-pointer"
-        // Hover handlers removed for continuous autoplay
-      >
+      <div className="group relative w-full aspect-video rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 cursor-pointer">
         {item.type === "video" ? (
           <>
             <video
@@ -239,54 +252,38 @@ function PortfolioCard({
               muted
               playsInline
               loop
-              autoPlay // <-- Starts immediately on load
+              autoPlay
               className="w-full h-full object-cover"
             />
-            {/* Play Button Overlay - Still permanently hidden (opacity-0) */}
-            <div
-              className={`absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300 opacity-0`}
-            >
-              {/* Content hidden */}
-            </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300 opacity-0" />
           </>
         ) : (
-          // Fallback for image items in video category
-          <>
-            <Image
-              src={item.src}
-              alt={`Video Project ${index + 1}`}
-              width={800}
-              height={450}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
-              <div className="w-16 h-16 rounded-full bg-lime-accent flex items-center justify-center transform group-hover:scale-110 transition-transform shadow-lg">
-                <Play className="w-6 h-6 text-black fill-current ml-1" />
-              </div>
-            </div>
-          </>
+          <Image
+            src={item.src}
+            alt={`Video Project ${index + 1}`}
+            width={800}
+            height={450}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
         )}
       </div>
     );
   }
 
-  // 3. BRANDING / LOGO CARD
   if (category === "Branding" || category === "Logo Design") {
     return (
       <div className="group relative w-full aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-lime-accent/50 transition-colors">
-        <div className="flex items-center justify-center w-full h-full  bg-zinc-900 group-hover:bg-zinc-800 transition-colors">
+        <div className="flex items-center justify-center w-full h-full bg-zinc-900 group-hover:bg-zinc-800 transition-colors">
           {item.type === "video" ? (
-            // Render video for Branding/Logo cards, automatically playing
             <video
               src={item.src}
-              className="w-full h-full object-cover p-0 transition-transform duration-500 group-hover:scale-105" // Slightly reduced scale for video to fit better
+              className="w-full h-full object-cover p-0 transition-transform duration-500 group-hover:scale-105"
               muted
               playsInline
               loop
               autoPlay
             />
           ) : (
-            // Original image rendering
             <Image
               src={item.src}
               alt={`Branding Project ${index + 1}`}
@@ -300,7 +297,6 @@ function PortfolioCard({
     );
   }
 
-  // 4. MOBILE APP
   if (category === "SEO") {
     return (
       <div className="group relative w-full h-[500px] rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900">
@@ -315,7 +311,6 @@ function PortfolioCard({
     );
   }
 
-  // 5. DEFAULT CARD
   return (
     <div className="group relative w-full aspect-4/3 rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
       <Image

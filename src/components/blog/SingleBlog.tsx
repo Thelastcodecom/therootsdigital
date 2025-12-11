@@ -1,6 +1,7 @@
 "use client";
 import { BlogPost } from "@/lib/types";
 import CommentSection from "./CommentSection";
+import Link from "next/link";
 
 interface Props {
   blog: BlogPost;
@@ -85,7 +86,7 @@ const SingleBlog: React.FC<Props> = ({ blog }) => {
 
           {/* Back to Blog Link */}
           <div className="mt-16 pt-8 border-t border-gray-800">
-            <a
+            <Link
               href="/blog"
               className="inline-flex items-center text-lime-400 hover:text-lime-300 transition-colors"
             >
@@ -103,7 +104,7 @@ const SingleBlog: React.FC<Props> = ({ blog }) => {
                 />
               </svg>
               Back to Blog
-            </a>
+            </Link>
           </div>
         </div>
       </div>

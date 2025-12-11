@@ -1,0 +1,51 @@
+/* LIME BORDER GLOW ANIMATION FOR TABS */
+
+/* Container that controls the shape & clipping */
+.tab-border-box,
+.tab-border-box-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Glow layer (blurred duplicate) */
+.tab-border-box-glow {
+  filter: blur(18px);
+}
+
+/* The rotating conic gradient */
+.tab-border-box::before,
+.tab-border-box-glow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  height: 140%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0),
+    #9efb63,
+    rgba(0, 0, 0, 0) 25%
+  );
+  animation: borderSpin 3.5s linear infinite;
+}
+
+/* Inner mask so the background doesn't fill — ONLY the border shows */
+.tab-border-box::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: transparent;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+@keyframes borderSpin {
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

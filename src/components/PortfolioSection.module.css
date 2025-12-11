@@ -1,0 +1,87 @@
+.tabButton {
+  position: relative;
+  z-index: 0;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;            /* border comes from the glow now */
+  border-radius: 9999px;      /* pill shape */
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  transition: color 0.3s ease, background 0.3s ease;
+}
+
+/* Rotating border (crisp edge) */
+.tabButton::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  width: 99999px;
+  height: 99999px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  /* lime-accent conic gradient */
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0),
+    #a3e635,
+    rgba(0, 0, 0, 0) 25%
+  );
+  animation: rotate 4s linear infinite;
+}
+
+/* Inner fill so only a thin border is visible */
+.tabButton::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 3px;                  /* border width */
+  top: 3px;
+  width: calc(100% - 6px);    /* 2 * border width */
+  height: calc(100% - 6px);
+  background: #000;           /* match your section background */
+  border-radius: inherit;
+}
+
+/* Soft outer glow (blurred copy of the border) */
+.glowBorder {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  filter: blur(18px);
+}
+
+.glowBorder::before {
+  content: '';
+  position: absolute;
+  z-index: -3;
+  top: 50%;
+  left: 50%;
+  width: 99999px;
+  height: 99999px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-image: conic-gradient(
+    rgba(0, 0, 0, 0),
+    #a3e635,
+    rgba(0, 0, 0, 0) 25%
+  );
+  animation: rotate 4s linear infinite;
+}
+
+
+/* Spin animation */
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0turn);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(1turn);
+  }
+}
