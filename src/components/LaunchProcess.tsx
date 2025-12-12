@@ -104,7 +104,7 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({
 
   return (
     <div
-      className="w-[200vw] h-[100px] py-2 shadow-lg overflow-hidden border-y-2 flex items-center"
+      className="w-[200vw] h-[130px] py-2 shadow-lg overflow-hidden border-y-2 flex items-center"
       style={{
         backgroundColor: isLimeBanner ? "#c4ef17" : "#ffffff",
         borderColor: "#000000",
@@ -132,7 +132,7 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({
           transform: translateY(18px);
         }
         .fade-step-inner.visible {
-          animation: fadeInUp 0.75s cubic-bezier(.22,.98,.38,1) forwards;
+          animation: fadeInUp 0.60s cubic-bezier(.22,.98,.38,1) forwards;
         }
       `}</style>
 
@@ -229,7 +229,7 @@ const LaunchProcessAndMarquee: React.FC = () => {
 
       {/* Marquee Section */}
       <div className="w-full relative h-48 md:h-64 overflow-hidden">
-        <div className="absolute w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-[70%] md:-translate-y-[60%] z-20">
+        <div className="absolute w-full left-2/3 -translate-x-1/2 top-1/2 -translate-y-[70%] md:-translate-y-[60%] z-20">
           <div className="hidden md:block">
             <MarqueeBand direction="left" rotation={-3} isLimeBanner={true} />
           </div>
@@ -238,7 +238,7 @@ const LaunchProcessAndMarquee: React.FC = () => {
           </div>
         </div>
 
-        <div className="absolute w-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-[30%] md:-translate-y-[40%] z-10">
+        <div className="absolute w-full left-2/3 -translate-x-1/2 top-1/2 -translate-y-[3%] md:-translate-y-[40%] z-10">
           <div className="hidden md:block">
             <MarqueeBand direction="right" rotation={3} isLimeBanner={false} />
           </div>

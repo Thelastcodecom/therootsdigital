@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 interface Plan {
   id: number;
@@ -196,10 +197,15 @@ const PricingSection = () => {
           {plans.map((plan) => {
             const activePricing = pricing[plan.id][tab];
             return (
-              <div
-                key={plan.id}
-                className="overflow-hidden border border-white/10 shadow-xl flex flex-col h-full"
-              >
+              <motion.div
+  key={plan.id}
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, amount: 0.2 }}
+  transition={{ duration: 0.5, delay: plan.id * 0.15 }}
+  className="overflow-hidden border border-white/10 shadow-xl flex flex-col md:max-h-[750px]
+             transition duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-lime-500/20"
+>
                 {/* Top Image */}
                 <div className="h-40 w-full overflow-hidden">
                   <img
@@ -247,7 +253,7 @@ const PricingSection = () => {
                     ))}
                   </ul>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

@@ -60,11 +60,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <p className="text-xs text-lime-400 mb-1 font-outfit">
                   {new Date(p.date).toLocaleDateString()}
                 </p>
-                
-                  <p className="text-base text-white font-marcellus font-semibold">
-                    {p.title}
-                  </p>
 
+                <div className="text-base text-white font-marcellus font-semibold">
+                  <Link href={`/blog/${p.slug}`}>{p.title}</Link>
+                </div>
               </div>
             </div>
           ))}

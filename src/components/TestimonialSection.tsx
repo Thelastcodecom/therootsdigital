@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-
+import { motion } from "framer-motion";
 interface Testimonial {
   id: number;
   text: string;
@@ -211,7 +211,11 @@ const TestimonialSection: React.FC = () => {
     <section className="w-full min-h-[80vh] bg-zinc-900 overflow-hidden">
       <div className="container mx-auto px-4 md:px-8 py-16 md:py-24">
         {/* TOP SECTION */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 40, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative p-8 md:p-12 lg:p-20 rounded-xl overflow-hidden
              bg-linear-to-r from-lime-400/60 to-zinc-900/95 
              shadow-2xl shadow-lime-400/20"
@@ -231,7 +235,9 @@ const TestimonialSection: React.FC = () => {
                 have been proactive to resolve my concerns in a timely manner.
               </h2>
               <div className="mt-8 text-white">
-                <p className="text-base font-semibold">Source: Every TRD Customer</p>
+                <p className="text-base font-semibold">
+                  Source: Every TRD Customer
+                </p>
                 <p className="text-xl font-bold mt-1">Rated 4.8 Excellent</p>
                 <img
                   src="/images/testimonial/stars.png"
@@ -241,10 +247,16 @@ const TestimonialSection: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* SLIDER SECTION */}
-        <div className="mt-4 md:mt-16 relative">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8 }}
+          className="mt-4 md:mt-16 relative"
+        >
           <button
             onClick={handlePrev}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-zinc-800 hover:bg-lime-400 hover:text-black text-white transition-all duration-300 shadow-lg"
@@ -266,24 +278,37 @@ const TestimonialSection: React.FC = () => {
             <div className="absolute right-8 md:right-12 top-0 bottom-0 w-16 md:w-24 bg-linear-to-l from-zinc-900 to-transparent z-10 pointer-events-none"></div>
 
             <div
-              className={`flex py-4 ${isTransitioning ? "transition-transform duration-500 ease-out" : ""}`}
+              className={`flex py-4 ${
+                isTransitioning
+                  ? "transition-transform duration-500 ease-out"
+                  : ""
+              }`}
               style={{ transform: `translateX(${getTransformValue()}px)` }}
               onTransitionEnd={handleTransitionEnd}
             >
               {extendedTestimonials.map((item, index) => {
                 const isActive = index === extendedIndex;
                 return (
-                  <div
+                  <motion.div
                     key={`${item.id}-${index}`}
+                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: (index % totalSlides) * 0.05,
+                    }}
                     onClick={() => {
                       const clickedRealIndex = index - cloneCount;
-                      if (clickedRealIndex >= 0 && clickedRealIndex < totalSlides) {
+                      if (
+                        clickedRealIndex >= 0 &&
+                        clickedRealIndex < totalSlides
+                      ) {
                         setActiveIndex(clickedRealIndex);
                       }
                     }}
                   >
                     <TestimonialCard item={item} isActive={isActive} />
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -303,7 +328,7 @@ const TestimonialSection: React.FC = () => {
               ></button>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

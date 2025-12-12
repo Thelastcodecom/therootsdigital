@@ -79,7 +79,7 @@ const ValueSection: React.FC = () => {
     <section className="w-full bg-black text-white py-15 relative overflow-hidden container mx-auto">
       <div className="relative z-10 px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* LEFT SIDE */}
-        <div className="relative w-full md:w-130 rounded-xl bg-transparent shadow-lg">
+        <div className="relative w-full max-w-xl mx-auto rounded-xl bg-transparent shadow-lg">
           {/* TABS */}
           <div className="relative flex mb-0">
             <motion.div
