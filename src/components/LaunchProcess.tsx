@@ -104,7 +104,17 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({
 
   return (
     <div
-      className="w-[200vw] h-[130px] py-2 shadow-lg overflow-hidden border-y-2 flex items-center"
+      className="
+  w-[200vw]
+  h-[100px]
+  md:h-[100px]
+  xl:h-[130px]
+  py-2
+  shadow-lg
+  overflow-hidden
+  border-y-2
+  flex items-center
+"
       style={{
         backgroundColor: isLimeBanner ? "#c4ef17" : "#ffffff",
         borderColor: "#000000",
@@ -190,11 +200,16 @@ const LaunchProcessAndMarquee: React.FC = () => {
           {stepsData.map((step, i) => (
             <div
               key={step.step}
-              className="border-lime-accent border-2 rounded-2xl bg-gray-900 shadow-2xl"
+              className="
+    group
+    border-lime-accent border-2 rounded-2xl
+    bg-gray-900 shadow-2xl
+    transition-all duration-300 ease-out
+    md:hover:-translate-y-3
+    md:hover:shadow-[0_20px_60px_rgba(196,239,23,0.25)]
+  "
               style={{
                 transform: `translateY(${step.desktopTransform})`,
-                backgroundClip: "padding-box, border-box",
-                backgroundOrigin: "padding-box, border-box",
               }}
             >
               {/* INNER: scroll animation */}
@@ -202,16 +217,26 @@ const LaunchProcessAndMarquee: React.FC = () => {
                 ref={(el) => {
                   if (el) stepRefs.current[i] = el;
                 }}
-                className="p-6 bg-black rounded-xl h-full flex flex-col items-center fade-step-inner"
+                className="
+    p-6 bg-black rounded-xl h-full
+    flex flex-col items-center
+    fade-step-inner
+    transition-transform duration-300
+    md:group-hover:scale-[1.02]
+  "
                 style={{
                   animationDelay: `${i * 0.22}s`,
                 }}
               >
-                <div className="w-full h-40 mb-6 bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+                <div className="w-full h-40 mb-6 bg-gray-800 rounded-lg overflow-hidden">
                   <img
                     src={step.image}
                     alt={`Step ${step.step} preview`}
-                    className="w-full h-full object-cover"
+                    className="
+    w-full h-full object-cover
+    transition-transform duration-300 ease-out
+    md:group-hover:scale-105
+  "
                   />
                 </div>
                 <h4 className="text-xl font-bold text-lime-accent mb-2">

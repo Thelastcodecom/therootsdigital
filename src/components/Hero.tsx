@@ -61,7 +61,7 @@ const Hero = () => {
       <div className="hidden md:flex relative z-20 flex-col h-full justify-between">
         {/* Headline */}
         <div className="pt-40 pl-16">
-          <h2 className="text-5xl lg:text-7xl xl:text-8xl font-bold leading-none text-lime-accent">
+          <h2 className="text-5xl lg:text-5xl xl:text-8xl font-bold leading-none text-lime-accent">
             {["Rethink", "Reinvent", "Revolutionize"].map((word, i) => (
               <motion.span
                 key={word}
@@ -91,7 +91,7 @@ const Hero = () => {
               alt="Brand Logo"
               width={600}
               height={600}
-              className="h-[26rem] md:h-[22rem] w-auto object-contain"
+              className="h-[26rem] md:h-[14rem] xl:h-[26rem] w-auto object-contain"
               priority
             />
           </motion.div>

@@ -142,7 +142,7 @@ export default function PortfolioGrid() {
     <section className="w-full container mx-auto py-16 md:py-24 bg-black">
       <div className="px-4 md:px-8 text-center">
         <motion.h2
-          className="text-5xl md:text-7xl lg:text-8xl text-white mb-10 font-bold tracking-tight"
+          className="text-5xl md:text-7xl lg:text-5xl xl:text-8xl text-white mb-10 font-bold tracking-tight"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.3 }}
@@ -152,13 +152,15 @@ export default function PortfolioGrid() {
         </motion.h2>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-16 max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-3 mb-16 md:max-w-4xl xl:max-w-6xl mx-auto">
           {categories.map((category) => (
             <motion.button
               key={category}
               onClick={() => setActiveTab(category)}
               data-active={activeTab === category} // ← add this
-              className={`${styles.tabButton} border border-lime-accent ${
+              className={`${
+                styles.tabButton
+              } border border-lime-accent text-xs ${
                 activeTab === category ? "bg-lime-accent text-black" : ""
               }`}
             >

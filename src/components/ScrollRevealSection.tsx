@@ -1,196 +1,155 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import styles from "./ScrollRevealSection.module.css";
+import { motion } from "framer-motion";
 
-interface ImageItem {
-  id: number;
-  src: string;
-  alt: string;
-}
-
-const mockImages: ImageItem[] = [
-  { id: 1, src: "/images/scroll-section/way 2.webp", alt: "Main project" },
-  { id: 2, src: "/images/scroll-section/way 1.webp", alt: "Left project" },
-  { id: 3, src: "/images/scroll-section/way 3.webp", alt: "Right project" },
+const images = [
+  { src: "/images/scroll-section/way 1.webp", z: 1 },
+  { src: "/images/scroll-section/way 2.webp", z: 3 }, // CENTER
+  { src: "/images/scroll-section/way 3.webp", z: 2 },
 ];
 
-const ScrollRevealSection: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const textRef = useRef<HTMLDivElement>(null);
+export default function ScrollRevealSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
+  const ticking = useRef(false);
 
-  const [isTextVisible, setIsTextVisible] = useState(false);
-
-  useEffect(() => {
-    const el = textRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsTextVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  const ease = (t: number) =>
-    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    if (window.innerWidth < 768) return;
 
-    let ticking = false;
+    const animate = () => {
+      ticking.current = false;
 
-    const handleScroll = () => {
-      const rect = container.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const start = vh * 0.8;
-      const end = rect.height * 0.4;
-      const raw = (start - rect.top) / end;
-      const p = ease(Math.min(1, Math.max(0, raw)));
+      const section = sectionRef.current;
+      if (!section) return;
 
-      cardRefs.current.forEach((card, index) => {
+      const rect = section.getBoundingClientRect();
+      const progress = Math.min(
+        1,
+        Math.max(0, (window.innerHeight - rect.top) / window.innerHeight)
+      );
+
+      // smoothstep easing
+      const eased = progress * progress * (3 - 2 * progress);
+
+      cardsRef.current.forEach((card, i) => {
         if (!card) return;
 
-        if (window.innerWidth < 768) {
-          card.style.transform =
-            index === 0
-              ? "translateX(-50%) scale(1)"
-              : "translateX(-50%) scale(0.95)";
-          card.style.opacity = index === 0 ? "1" : "0";
+        if (i === 1) {
+          // center image
+          card.style.transform = `translate(-50%, 0) scale(${
+            1 + eased * 0.05
+          })`;
           return;
         }
+        const dir = i === 0 ? -1 : 1;
 
-        switch (index) {
-          case 0:
-            card.style.transform = `translateX(-50%) scale(${1 + p * 0.08})`;
-            card.style.opacity = `${0.75 + p * 0.25}`;
-            break;
-          case 1:
-            card.style.transform = `translateX(calc(-50% - ${
-              p * 60
-            }px)) rotate(${p * -10}deg) scale(${1 - p * 0.08})`;
-            card.style.opacity = `${0.4 + p * 0.4}`;
-            break;
-          case 2:
-            card.style.transform = `translateX(calc(-50% + ${
-              p * 60
-            }px)) rotate(${p * 10}deg) scale(${1 - p * 0.08})`;
-            card.style.opacity = `${0.4 + p * 0.4}`;
-            break;
-        }
+        card.style.transform = `
+          translate(-50%, ${eased * -40}px)
+          translateX(${dir * eased * 80}px)
+          rotate(${dir * eased * 12}deg)
+          scale(${1 - eased * 0.12})
+        `;
       });
-
-      ticking = false;
     };
-
+    
     const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(handleScroll);
-        ticking = true;
+      if (!ticking.current) {
+        requestAnimationFrame(animate);
+        ticking.current = true;
       }
     };
 
     window.addEventListener("scroll", onScroll);
+    animate(); // initial state
+
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (delay = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        delay,
+      },
+    }),
+  };
   return (
-    <section className="bg-black text-white container mx-auto">
-      <div ref={containerRef} className="h-[200vh]">
-        <div className="sticky top-[10vh] w-full px-4 md:px-8">
-          <div className="flex flex-col md:grid md:grid-cols-2 md:gap-16 items-center">
-            <div
-              ref={textRef}
-              className="order-2 sm:mb-0 md:order-1 pt-8 md:pt-0 text-center md:text-left"
-            >
-              <h3
-                className={`text-sm uppercase tracking-widest text-lime-accent mb-2 font-bold transition-all duration-500 ${
-                  isTextVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 -translate-y-4"
-                }`}
+    <section ref={sectionRef} className="bg-black text-white container mx-auto">
+      <div className="h-[200vh]">
+        <div className="sticky top-[10vh] px-4 md:px-8">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            {/* LEFT SIDE — UNTOUCHED */}
+            <div>
+              <motion.h3
+                className="text-sm uppercase tracking-widest text-lime-accent font-bold mb-2"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               >
                 Our Mission
-              </h3>
+              </motion.h3>
 
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
-                <span className="block overflow-hidden">
-                  <span
-                    className={`inline-block transition-all duration-500 ${
-                      isTextVisible
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-full"
-                    }`}
-                    style={{ transitionDelay: "100ms" }}
-                  >
-                    Thankfully, there is
-                  </span>
-                </span>
-                <span className="block overflow-hidden">
-                  <span
-                    className={`inline-block transition-all duration-500 ${
-                      isTextVisible
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-full"
-                    }`}
-                    style={{ transitionDelay: "200ms" }}
-                  >
-                    The Roots Digital.
-                  </span>
-                </span>
-              </h2>
+              <motion.h2
+                className="text-4xl md:text-6xl font-extrabold leading-tight mb-6"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+              >
+                Thankfully, there is
+                <br />
+                The Roots Digital.
+              </motion.h2>
 
-              <p
-                className={`text-base md:text-lg text-gray-400 max-w-xl leading-relaxed transition-all duration-500 ${
-                  isTextVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-6"
-                }`}
-                style={{ transitionDelay: "350ms" }}
+              <motion.p
+                className="text-gray-400 max-w-xl mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
               >
                 The truly affordable done-for-you website solution.
-              </p>
+              </motion.p>
 
-              <button
-                className={`mt-6 px-6 py-3 bg-lime-accent text-black font-semibold rounded-lg hover:bg-lime-400 transition-all duration-500 ${
-                  isTextVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8"
-                }`}
-                style={{ transitionDelay: "500ms" }}
+              <motion.button
+                className={`${styles.button} border border-lime-accent`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.35 }}
               >
+                <span className={styles.glow} />
                 See Our Case Studies
-              </button>
+              </motion.button>
             </div>
 
-            <div className="order-2 md:order-2 relative w-full h-[50vh] md:h-[70vh]">
-              {mockImages.map((item, index) => (
+            {/* RIGHT SIDE — IMAGE STACK */}
+            <div className="relative h-[70vh] w-full">
+              {images.map((img, i) => (
                 <div
-                  key={item.id}
-                  ref={(el: HTMLDivElement | null) => {
-                    cardRefs.current[index] = el;
+                  key={i}
+                  ref={(el) => {
+                    if (el) cardsRef.current[i] = el;
                   }}
-                  className="absolute bottom-8 left-1/2 w-[55%] max-w-[280px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+                  className="absolute bottom-0 left-1/2 w-[55%] max-w-[300px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl"
                   style={{
-                    transformOrigin: "bottom center",
-                    transition:
-                      "transform 0.2s ease-out, opacity 0.2s ease-out",
+                    zIndex: img.z,
+                    transform: "translate(-50%, 0)",
+                    transition: "transform 0.25s ease-out",
                   }}
                 >
                   <img
-                    src={item.src}
-                    alt={item.alt}
+                    src={img.src}
+                    alt=""
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
               ))}
             </div>
@@ -199,6 +158,4 @@ const ScrollRevealSection: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default ScrollRevealSection;
+}

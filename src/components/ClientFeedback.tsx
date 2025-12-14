@@ -144,9 +144,18 @@ const ClientVideoCard: React.FC<ClientVideoCardProps> = ({
 
   return (
     <div
-      className={`flex-1 w-full md:max-w-md relative aspect-video shadow-2xl rounded-lg overflow-hidden bg-gray-900
-        transition-all duration-700 ease-out
-        ${isVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 translate-x-10 scale-95"}`}
+      className={`group flex-1 w-full 
+    md:max-w-sm lg:max-w-md xl:max-w-md 
+    relative aspect-video rounded-lg overflow-hidden bg-gray-900
+    shadow-2xl
+    transition-all duration-500 ease-out
+    hover:scale-[1.03]
+    hover:shadow-[0_0_35px_rgba(132,204,22,0.35)]
+    ${
+      isVisible
+        ? "opacity-100 translate-x-0 scale-100"
+        : "opacity-0 translate-x-10 scale-95"
+    }`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       <CopyLinkButton linkUrl={client.videoLink} />
@@ -159,14 +168,24 @@ const ClientVideoCard: React.FC<ClientVideoCardProps> = ({
           <img
             src={thumbnailUrl}
             alt={client.videoAlt}
-            className="w-full h-full object-cover opacity-90 transition-opacity duration-300 hover:opacity-100"
+            className="w-full h-full object-cover
+    transition-all duration-500 ease-out
+    group-hover:scale-110
+    group-hover:brightness-110"
           />
 
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent
+     opacity-60 group-hover:opacity-30 transition-opacity duration-500"
+            />
             <svg
-              className="w-20 h-20 text-white opacity-90 transition-opacity duration-300 hover:opacity-100"
-              fill="currentColor"
-              viewBox="0 0 24 24"
+              className="w-20 h-20 text-white
+    transition-all duration-500 ease-out
+    opacity-90
+    group-hover:scale-110
+    group-hover:opacity-100
+    group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]"
             >
               <path d="M6 3l12 9-12 9V3z" />
             </svg>
@@ -176,10 +195,16 @@ const ClientVideoCard: React.FC<ClientVideoCardProps> = ({
             href={client.videoLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-70 p-1 px-2 rounded hover:bg-opacity-90 z-10"
+            className="absolute  bottom-2 left-2 text-white text-xs bg-black bg-opacity-70 p-1 px-2 rounded hover:bg-opacity-90 z-10"
           >
             Watch on YouTube
           </a>
+          <div
+            className="pointer-events-none absolute inset-0 rounded-lg
+     ring-1 ring-transparent
+     group-hover:ring-lime-400/40
+     transition-all duration-500"
+          />
         </div>
       )}
 
@@ -217,9 +242,11 @@ const AnimatedClientCard: React.FC<AnimatedClientCardProps> = ({
   return (
     <div
       ref={ref as RefObject<HTMLDivElement>}
-      className={`flex flex-col md:flex-row items-center mb-24 backdrop-blur-sm p-6 rounded-xl
+      className={`flex flex-col md:flex-row items-center mb-10 xl:mb-24 backdrop-blur-sm p-6 rounded-xl
         transition-all duration-700 ease-out
-        ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"} inner-gradient-glow`}
+        ${
+          isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
+        } inner-gradient-glow`}
       style={{
         boxShadow:
           index % 2 === 0
@@ -229,18 +256,32 @@ const AnimatedClientCard: React.FC<AnimatedClientCardProps> = ({
       }}
     >
       {/* Info Section */}
-      <div className="flex-1 text-white text-left p-4 md:mr-10 w-full md:w-auto mb-6 md:mb-0">
+      <div
+        className="flex-1 text-white text-left 
+             p-4 md:p-3 lg:p-4 xl:p-4
+             md:mr-8 lg:mr-10 xl:mr-10
+             w-full md:max-w-[420px] lg:max-w-[460px] xl:max-w-none
+             mb-6 md:mb-0"
+      >
         {infoItems.map((item, i) => (
           <div key={item.label} className="overflow-hidden">
             <p
               className={`text-xl sm:text-2xl font-light leading-relaxed
                 transition-all duration-600 ease-out
-                ${isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                ${
+                  isInView
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-8"
+                }`}
               style={{ transitionDelay: `${200 + i * 150}ms` }}
             >
               <span
                 className={`text-lime-400 inline-block transition-all duration-500
-                  ${isInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"}`}
+                  ${
+                    isInView
+                      ? "opacity-100 translate-x-0"
+                      : "opacity-0 -translate-x-4"
+                  }`}
                 style={{ transitionDelay: `${250 + i * 150}ms` }}
               >
                 {item.label} :
