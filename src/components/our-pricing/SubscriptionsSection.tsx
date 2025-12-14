@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 interface Plan {
   id: number;
@@ -171,17 +172,10 @@ const PricingSection = () => {
   const [tab, setTab] = useState<"monthly" | "early">("monthly");
 
   return (
-    <section className="w-full bg-black py-20 text-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center pt-20 pb-10">
-          <h1 className="text-xl tracking-[0.2rem] font-marcellus">CONTACT</h1>
-          <p className="text-xs mt-2 opacity-60 tracking-widest font-outfit">
-            THE ROOTS DIGITAL &gt; CONTACT
-          </p>
-        </div>
-        <hr className="border-[#242424]" />
+    <section className="w-full bg-black py-20 text-white mt-14 md:mt-12 lg:mt-16 xl:mt-20">
+      <div className="w-full px-4 xl:px-16 2xl:px-24">
         {/* Tabs */}
-        <div className="flex justify-center mb-10 gap-4 pt-20">
+        <div className="flex justify-center mb-10 gap-4">
           {(["monthly", "early"] as const).map((t) => (
             <button
               key={t}
@@ -199,13 +193,18 @@ const PricingSection = () => {
         </div>
 
         {/* Cards */}
-        <div className="grid gap-8 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+        <div className="grid md:gap-4 xl:gap-8 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
           {plans.map((plan) => {
             const activePricing = pricing[plan.id][tab];
             return (
-              <div
+              <motion.div
                 key={plan.id}
-                className="overflow-hidden border border-white/10 shadow-xl flex flex-col h-full"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: plan.id * 0.15 }}
+                className="overflow-hidden border border-white/10 shadow-xl flex flex-col md:max-h-[750px]
+             transition duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-lime-500/20"
               >
                 {/* Top Image */}
                 <div className="h-40 w-full overflow-hidden">
@@ -254,7 +253,7 @@ const PricingSection = () => {
                     ))}
                   </ul>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

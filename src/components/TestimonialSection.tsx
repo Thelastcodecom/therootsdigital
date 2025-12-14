@@ -191,13 +191,17 @@ const TestimonialSection: React.FC = () => {
     </div>
   );
 
-  const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, isActive }) => (
+  const TestimonialCard: React.FC<TestimonialCardProps> = ({
+    item,
+    isActive,
+  }) => (
     <div
       className={`shrink-0 w-64 p-4 mx-2 rounded-lg backdrop-blur-sm shadow-2xl 
         transition-all duration-500 ease-out cursor-pointer
-        ${isActive
-          ? "bg-zinc-800 border-2 border-lime-400 scale-105 shadow-lime-400/30"
-          : "bg-zinc-800/50 border border-lime-400/30 scale-95 opacity-70 hover:opacity-90"
+        ${
+          isActive
+            ? "bg-zinc-800 border-2 border-lime-400 scale-105 shadow-lime-400/30"
+            : "bg-zinc-800/50 border border-lime-400/30 scale-95 opacity-70 hover:opacity-90"
         }`}
     >
       <StarRating count={item.stars} />
@@ -216,33 +220,84 @@ const TestimonialSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative p-8 md:p-12 lg:p-20 rounded-xl overflow-hidden
-             bg-linear-to-r from-lime-400/60 to-zinc-900/95 
-             shadow-2xl shadow-lime-400/20"
+          className="
+    relative rounded-xl overflow-hidden
+    p-6
+    md:p-8
+    lg:p-10
+    xl:p-20
+    bg-linear-to-r from-lime-400/60 to-zinc-900/95
+    shadow-2xl shadow-lime-400/20
+  "
         >
           <div className="absolute inset-0 bg-linear-to-l from-zinc-900 to-transparent z-0"></div>
+
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex justify-center lg:justify-start w-full lg:w-1/3 mb-10 lg:mb-0">
+            {/* IMAGE */}
+            <div className="flex justify-center lg:justify-start w-full lg:w-1/3 mb-8 lg:mb-0">
               <img
                 src="/images/testimonial/trustpilot.webp"
                 alt="Trustpilot"
-                className="w-40 md:w-52 lg:w-64 object-contain"
+                className="
+          w-32
+          md:w-40
+          lg:w-48
+          xl:w-64
+          object-contain
+        "
               />
             </div>
+
+            {/* TEXT */}
             <div className="text-center lg:text-left w-full lg:w-2/3">
-              <h2 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white leading-tight tracking-tight max-w-3xl">
+              <h2
+                className="
+          font-extrabold text-white leading-tight tracking-tight max-w-3xl
+          text-lg
+          md:text-xl
+          lg:text-2xl
+          xl:text-4xl
+        "
+              >
                 I was impressed how smooth the whole process was with them. They
                 have been proactive to resolve my concerns in a timely manner.
               </h2>
-              <div className="mt-8 text-white">
-                <p className="text-base font-semibold">
+
+              <div className="mt-6 xl:mt-8 text-white">
+                <p
+                  className="
+            font-semibold
+            text-sm
+            md:text-sm
+            lg:text-base
+            xl:text-base
+          "
+                >
                   Source: Every TRD Customer
                 </p>
-                <p className="text-xl font-bold mt-1">Rated 4.8 Excellent</p>
+
+                <p
+                  className="
+            font-bold mt-1
+            text-lg
+            md:text-lg
+            lg:text-xl
+            xl:text-xl
+          "
+                >
+                  Rated 4.8 Excellent
+                </p>
+
                 <img
                   src="/images/testimonial/stars.png"
                   alt="stars"
-                  className="w-40 md:w-48 mt-2"
+                  className="
+            mt-2
+            w-32
+            md:w-36
+            lg:w-40
+            xl:w-48
+          "
                 />
               </div>
             </div>
@@ -255,7 +310,7 @@ const TestimonialSection: React.FC = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="mt-4 md:mt-16 relative"
+          className="mt-4 md:mt-8 lx:mt-16 relative"
         >
           <button
             onClick={handlePrev}

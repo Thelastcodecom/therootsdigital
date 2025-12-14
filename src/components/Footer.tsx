@@ -185,10 +185,8 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="relative bg-black text-white overflow-hidden ">
-
-
       {/* Background Image Section - FIXED: Full height with horizontal repeat */}
-      <div className="relative min-h-[500px] md:min-h-[600px]">
+      <div className="relative min-h-[380px] md:min-h-[360px] lg:min-h-[380px]">
         {/* Background Image Container */}
         <div
           className="absolute inset-0"
@@ -221,12 +219,12 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Content Container */}
-        <div className="relative container mx-auto px-4 py-16 md:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+        <div className="relative container mx-auto px-4 py-10 md:py-14">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6">
             {/* 1. Magnetic PING US Button */}
             <div className="lg:col-span-4 flex justify-center lg:justify-start items-center">
-              <MagneticButton href="#contact" className="group">
-                <div className="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72">
+              <MagneticButton href="/contact" className="group">
+                <div className=" relative w-44 h-44 sm:w-40 sm:h-40 md:w-40 md:h-40 lg:w-60 lg:h-60 xl:w-72 xl:h-72">
                   {/* Outer Glow Ring */}
                   <div className="absolute inset-0 rounded-full bg-lime-400/20 blur-xl group-hover:bg-lime-400/40 transition-all duration-500" />
 
@@ -246,10 +244,10 @@ const Footer: React.FC = () => {
                     <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-white/10 to-white/20" />
 
                     {/* Text */}
-                    <span className="relative text-2xl md:text-3xl font-black text-black tracking-wider">
+                    <span className="relative text-xl md:text-xl lg:text-2xl xl:text-3xl font-black text-black tracking-wider">
                       PING
                     </span>
-                    <span className="relative text-2xl md:text-3xl font-black text-black tracking-wider">
+                    <span className="relative text-xl md:text-xl lg:text-2xl xl:text-3xl font-black text-black tracking-wider">
                       US
                     </span>
 
@@ -328,11 +326,13 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. Contact & Branding */}
-            <div className="lg:col-span-3 space-y-8">
+            <div className="lg:col-span-3 space-y-8 md:space-y-0 md:flex md:items-center md:justify-between lg:flex-col xl:flex-col">
               {/* Logo */}
-              <div>
-                <a href="#" className="inline-block group">
+              <div className="flex flex-col items-center md:flex-row md:items-center md:gap-6">
+                <a
+                  href="#"
+                  className="inline-block group text-center md:text-left"
+                >
                   <span className="text-3xl md:text-4xl font-black tracking-tight text-white">
                     the roots{" "}
                     <span className="text-lime-400 group-hover:text-lime-300 transition-colors">
@@ -340,22 +340,22 @@ const Footer: React.FC = () => {
                     </span>
                   </span>
                 </a>
-                <p className="text-gray-500 text-sm mt-3 max-w-xs">
+                <p className="text-gray-500 text-sm mt-3 md:mt-0 max-w-xs">
                   Crafting digital excellence for businesses worldwide since
                   2020.
                 </p>
               </div>
 
               {/* Trust Badges */}
-              <div className="flex ">
-                <div className="flex py-2 ">
+              <div className="flex flex-col items-center mt-4 md:flex-row md:mt-0 md:gap-4 md:items-start">
+                <div className="flex py-2">
                   <img
                     src="/images/footer/google.webp"
                     alt="Google Partner"
                     className="w-40 h-15"
                   />
                 </div>
-                <div className="flex px-4 py-2">
+                <div className="flex py-2">
                   <img
                     src="/images/footer/trustpilot.webp"
                     alt="Trustpilot"
@@ -370,7 +370,7 @@ const Footer: React.FC = () => {
 
       {/* Bottom Copyright Bar */}
       <div className="relative border-t border-lime-accent bg-zinc-950/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-500 text-center md:text-left">
               © {new Date().getFullYear()} The Roots Digital. All rights
