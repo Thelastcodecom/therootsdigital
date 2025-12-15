@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, AnimatePresence } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
 const navLinks = [
   { name: "HOME", href: "/" },
@@ -181,45 +182,90 @@ const Navbar = () => {
       </motion.div>
 
       {/* ================= SIDEBAR OVERLAY ================= */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isSidebarOpen ? 0.5 : 0 }}
-        transition={{ duration: 0.3 }}
-        className={`hidden md:block fixed inset-0 bg-black z-40 ${
-          isSidebarOpen ? "pointer-events-auto" : "pointer-events-none"
-        }`}
-        onClick={() => setIsSidebarOpen(false)}
-      />
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 bg-black z-60"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* ================= SIDEBAR ================= */}
-      <motion.div
-        initial={{ x: "100%" }}
-        animate={{ x: isSidebarOpen ? "0%" : "100%" }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="hidden md:block fixed top-0 right-0 h-full w-1/3 bg-gradient-to-b from-gray-800 to-gray-900 z-50"
-      >
-        <button
-          onClick={() => setIsSidebarOpen(false)}
-          className="absolute top-8 right-8 text-gray-400 hover:text-white"
-        >
-          ✕
-        </button>
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ y: "-100%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            exit={{ y: "-100%", opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed top-0 right-0 h-full w-1/3 bg-[#16171B] z-70"
+          >
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="absolute top-8 right-8 text-gray-500 hover:text-white transition"
+            >
+              ✕
+            </button>
 
-        <div className="p-12 pt-24 space-y-12">
-          <div>
-            <h2 className="text-3xl font-light mb-6">Brief us</h2>
-            <p className="text-gray-400">info@therootsdigital.com</p>
-            <p className="text-gray-400">tel: 727-334-6567</p>
-          </div>
+            <div className="p-12 pt-24 space-y-12">
+              <div>
+                <h2 className="text-3xl text-white font-light mb-6">
+                  Brief us
+                </h2>
+                <p className="text-gray-400">info@therootsdigital.com</p>
+                <p className="text-gray-400">tel: 727-334-6567</p>
+              </div>
 
-          <div>
-            <h2 className="text-3xl font-light mb-6">Our Office</h2>
-            <p className="text-gray-400">
-              7901 4th Street, Saint Petersburg, FL
-            </p>
-          </div>
-        </div>
-      </motion.div>
+              <div>
+                <h2 className="text-3xl text-white font-light mb-6">
+                  Our Office
+                </h2>
+                <p className="text-gray-400">
+                  7901 4th Street, Saint Petersburg, FL
+                </p>
+              </div>
+
+              <div>
+                <h2 className="text-3xl text-white font-light mb-6">
+                  Follow us
+                </h2>
+
+                <ul className="space-y-4">
+                  <li>
+                    <a
+                      href="https://www.instagram.com/therootsdigital/"
+                      target="_blank"
+                      className="group inline-flex items-center gap-3 text-gray-300 hover:text-white transition"
+                    >
+                      <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45 group-hover:translate-x-1" />
+                      <span className="group-hover:translate-x-1 transition-transform">
+                        Instagram
+                      </span>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      href="#"
+                      className="group inline-flex items-center gap-3 text-gray-300 hover:text-white transition"
+                    >
+                      <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:rotate-45 group-hover:translate-x-1" />
+                      <span className="group-hover:translate-x-1 transition-transform">
+                        Facebook
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
