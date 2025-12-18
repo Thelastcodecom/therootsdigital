@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Ref, RefObject } from "react";
+import { useState, useEffect, useRef,  RefObject } from "react";
 
 // --- Custom Hook for Intersection Observer ---
 interface UseInViewOptions extends IntersectionObserverInit {}

@@ -16,7 +16,6 @@ export default function Home() {
       <PortfolioGrid />
       <ScrollRevealSection />
       <LaunchProcessAndMarquee />
-      <ClientFeedback />
       <TestimonialsSection />
       <SubscriptionsSection />
 

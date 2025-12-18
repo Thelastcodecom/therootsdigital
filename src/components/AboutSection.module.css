@@ -1,51 +1,67 @@
-/* LIME BORDER GLOW ANIMATION FOR TABS */
-
-/* Container that controls the shape & clipping */
-.tab-border-box,
-.tab-border-box-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
-  pointer-events: none;
-  z-index: -1;
+.section {
+  position: relative;
+  width: 100vw;
+  height: 200vh; /* scrollable area */
+  background-color: black;
   overflow: hidden;
 }
 
-/* Glow layer (blurred duplicate) */
-.tab-border-box-glow {
-  filter: blur(18px);
-}
-
-/* The rotating conic gradient */
-.tab-border-box::before,
-.tab-border-box-glow::before {
-  content: "";
+.background {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 140%;
-  height: 140%;
-  transform: translate(-50%, -50%) rotate(0deg);
-  background-image: conic-gradient(
-    rgba(0, 0, 0, 0),
-    #9efb63,
-    rgba(0, 0, 0, 0) 25%
-  );
-  animation: borderSpin 3.5s linear infinite;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
-/* Inner mask so the background doesn't fill — ONLY the border shows */
-.tab-border-box::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  background: transparent;
-  border-radius: 4px;
-  z-index: 2;
+.bgImage {
+  object-fit: contain;
+  opacity: 0.2;
 }
 
-@keyframes borderSpin {
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
+.stickyContainer {
+  position: sticky;
+  top: 50%; /* vertically centered */
+  height: 0; /* sticky only, no extra height */
+}
+
+.astronaut {
+  position: relative;
+  width: 220px;
+  max-width: 25vw;
+  transform: translateX(0%);
+  animation: moveAstronaut 1s linear forwards; /* placeholder, real scroll handled via scroll-linked CSS below */
+}
+
+/* Scroll-linked horizontal movement */
+@media (prefers-reduced-motion: no-preference) {
+  .section {
+    scroll-snap-type: y mandatory;
+  }
+
+  .astronaut {
+    /* move from left to right as user scrolls */
+    position: sticky;
+    top: 50%;
+    left: 0;
+    transform: translateX(0);
+    will-change: transform;
+  }
+
+  .section::after {
+    content: "";
+    display: block;
+    height: 100%; /* total scroll distance */
+  }
+}
+
+/* Keyframe alternative if needed */
+@keyframes moveAstronaut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100vw - 220px));
   }
 }

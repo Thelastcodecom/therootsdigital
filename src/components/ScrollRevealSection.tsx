@@ -1,90 +1,39 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import styles from "./ScrollRevealSection.module.css";
-import { motion } from "framer-motion";
-
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import styles from "./ScrollRevealSection.module.css"
 const images = [
-  { src: "/images/scroll-section/way 1.webp", z: 1 },
-  { src: "/images/scroll-section/way 2.webp", z: 3 }, // CENTER
-  { src: "/images/scroll-section/way 3.webp", z: 2 },
+  { src: "/images/scroll-section/way 1.webp", z: 1, dir: -1 },
+  { src: "/images/scroll-section/way 2.webp", z: 3, dir: 0 }, // center
+  { src: "/images/scroll-section/way 3.webp", z: 2, dir: 1 },
 ];
 
 export default function ScrollRevealSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
-  const ticking = useRef(false);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
 
+  // Scroll progress for the section
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"], // 0 at start, 1 at end
+  });
 
-  useEffect(() => {
-    if (window.innerWidth < 768) return;
+  // Common transform values
+  const y = useTransform(scrollYProgress, [0, 1], [0, -40]); // images move up
+  const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]); // fade in quickly
 
-    const animate = () => {
-      ticking.current = false;
+  const xLeft = useTransform(scrollYProgress, [0, 1], [0, -320]); // left image
+  const xRight = useTransform(scrollYProgress, [0, 1], [0, 320]); // right image
+  const scaleCenter = useTransform(scrollYProgress, [0, 1], [0.95, 1.05]); // center scale
+  const scaleSide = useTransform(scrollYProgress, [0, 1], [0.9, 1]); // side images
 
-      const section = sectionRef.current;
-      if (!section) return;
-
-      const rect = section.getBoundingClientRect();
-      const progress = Math.min(
-        1,
-        Math.max(0, (window.innerHeight - rect.top) / window.innerHeight)
-      );
-
-      // smoothstep easing
-      const eased = progress * progress * (3 - 2 * progress);
-
-      cardsRef.current.forEach((card, i) => {
-        if (!card) return;
-
-        if (i === 1) {
-          // center image
-          card.style.transform = `translate(-50%, 0) scale(${
-            1 + eased * 0.05
-          })`;
-          return;
-        }
-        const dir = i === 0 ? -1 : 1;
-
-        card.style.transform = `
-          translate(-50%, ${eased * -40}px)
-          translateX(${dir * eased * 80}px)
-          rotate(${dir * eased * 12}deg)
-          scale(${1 - eased * 0.12})
-        `;
-      });
-    };
-    
-    const onScroll = () => {
-      if (!ticking.current) {
-        requestAnimationFrame(animate);
-        ticking.current = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll);
-    animate(); // initial state
-
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  const fadeUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (delay = 0) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-        delay,
-      },
-    }),
-  };
   return (
     <section ref={sectionRef} className="bg-black text-white container mx-auto">
-      <div className="h-[200vh]">
-        <div className="sticky top-[10vh] px-4 md:px-8">
+      {/* Scroll space */}
+      <div className="h-screen">
+        <div className="top-[10vh] px-4 md:px-8">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* LEFT SIDE — UNTOUCHED */}
+            {/* LEFT CONTENT */}
             <div>
               <motion.h3
                 className="text-sm uppercase tracking-widest text-lime-accent font-bold mb-2"
@@ -130,28 +79,33 @@ export default function ScrollRevealSection() {
               </motion.button>
             </div>
 
-            {/* RIGHT SIDE — IMAGE STACK */}
+            {/* RIGHT IMAGE STACK */}
             <div className="relative h-[70vh] w-full">
-              {images.map((img, i) => (
-                <div
-                  key={i}
-                  ref={(el) => {
-                    if (el) cardsRef.current[i] = el;
-                  }}
-                  className="absolute bottom-0 left-1/2 w-[55%] max-w-[300px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl"
-                  style={{
-                    zIndex: img.z,
-                    transform: "translate(-50%, 0)",
-                    transition: "transform 0.25s ease-out",
-                  }}
-                >
-                  <img
-                    src={img.src}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
+              {images.map((img) => {
+                const x = img.dir === -1 ? xLeft : img.dir === 1 ? xRight : 0;
+                const scale = img.dir === 0 ? scaleCenter : scaleSide;
+
+                return (
+                  <motion.div
+                    key={img.src}
+                    className="absolute bottom-0 left-1/2 w-[55%] max-w-[300px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl"
+                    style={{
+                      zIndex: img.z,
+                      x,
+                      y,
+                      scale,
+                      opacity,
+                      translateX: "-50%",
+                    }}
+                  >
+                    <img
+                      src={img.src}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>

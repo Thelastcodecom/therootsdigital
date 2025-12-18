@@ -93,8 +93,7 @@ const plans: Plan[] = [
   {
     id: 4,
     title: "Extreme E-Commerce",
-    description:
-      "A complete, high-performance online store designed for smooth, scalable sales",
+    description: "A complete, online store designed for smooth, scalable sales",
     color: "from-[#4A0C0C] to-[#260606]",
     image: "/images/subscription-images/4.webp",
     features: [
@@ -219,7 +218,7 @@ const PricingSection = () => {
                 <div
                   className={`flex flex-col justify-between flex-1 bg-gradient-to-b ${plan.color} p-6`}
                 >
-                  <h2 className="text-2xl font-bold text-center mb-2">
+                  <h2 className="text-xl 2xl:text-2xl font-bold text-center mb-2">
                     {plan.title}
                   </h2>
                   <p className="text-center mb-2">{plan.description}</p>

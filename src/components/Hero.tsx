@@ -61,7 +61,7 @@ const Hero = () => {
       <div className="hidden md:flex relative z-20 flex-col h-full justify-between">
         {/* Headline */}
         <div className="pt-40 pl-16">
-          <h2 className="text-5xl lg:text-5xl xl:text-8xl font-bold leading-none text-lime-accent">
+          <h2 className="text-5xl lg:text-5xl xl:text-6xl 2xl:text-8xl font-bold leading-none text-lime-accent">
             {["Rethink", "Reinvent", "Revolutionize"].map((word, i) => (
               <motion.span
                 key={word}
@@ -91,7 +91,7 @@ const Hero = () => {
               alt="Brand Logo"
               width={600}
               height={600}
-              className="h-[26rem] md:h-[14rem] xl:h-[26rem] w-auto object-contain"
+              className="h-[26rem] md:h-[14rem] xl:h-[16rem] 2xl:h-[26rem] w-auto object-contain"
               priority
             />
           </motion.div>
@@ -115,7 +115,7 @@ const Hero = () => {
               initial="hidden"
               animate="visible"
               variants={aboutVariants}
-              className="text-4xl xl:text-6xl uppercase font-bold lg:whitespace-nowrap"
+              className="text-4xl xl:text-5xl 2xl:text-6xl uppercase font-bold lg:whitespace-nowrap"
             >
               CRAFTING DIGITAL
             </motion.h2>
@@ -125,7 +125,7 @@ const Hero = () => {
               initial="hidden"
               animate="visible"
               variants={aboutVariants}
-              className="text-4xl xl:text-6xl uppercase text-[#868686]"
+              className="text-4xl xl:text-5xl 2xl:text-6xl uppercase text-[#868686]"
             >
               EXCELLENCE
             </motion.h2>
