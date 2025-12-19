@@ -174,7 +174,7 @@ const PricingSection = () => {
   };
 
   return (
-    <section className="w-full bg-black py-20 text-white overflow-hidden">
+    <section className="w-full bg-black py-20 text-white overflow-hidden mt-15">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
