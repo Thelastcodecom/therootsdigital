@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 
 // --- Icon Definitions ---
-interface IconProps extends React.SVGProps<SVGSVGElement> {}
+type IconProps = React.SVGProps<SVGSVGElement>;
 
 const Facebook: React.FC<IconProps> = (props) => (
   <svg

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef,  RefObject } from "react";
 
 // --- Custom Hook for Intersection Observer ---
-interface UseInViewOptions extends IntersectionObserverInit {}
+type UseInViewOptions = IntersectionObserverInit;
 interface UseInViewReturn {
   ref: React.RefObject<HTMLElement | null>;
   isInView: boolean;

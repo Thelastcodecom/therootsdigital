@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import  { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Plan {
   id: number;
@@ -17,14 +17,13 @@ interface Pricing {
   early: { price: string; buttonText: string };
 }
 
-// Shared plan data
 const plans: Plan[] = [
   {
     id: 1,
     title: "Starter Launchpad",
     description:
       "Get your business online quickly with all the essentials to take off Successfully Today.",
-    color: "from-[#46911F] to-[#46911F]",
+    color: "from-[#46911F] to-[#2A5212]",
     image: "/images/subscription-images/1.jpg",
     features: [
       "3 page or multi-section starter website",
@@ -143,7 +142,6 @@ const plans: Plan[] = [
   },
 ];
 
-// Pricing only changes per plan
 const pricing: Record<number, Pricing> = {
   1: {
     monthly: { price: "$25", buttonText: "Launch My Website" },
@@ -169,88 +167,154 @@ const pricing: Record<number, Pricing> = {
 
 const PricingSection = () => {
   const [tab, setTab] = useState<"monthly" | "early">("monthly");
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
+
+  const handleImageLoad = (id: number) => {
+    setLoadedImages((prev) => ({ ...prev, [id]: true }));
+  };
 
   return (
-    <section className="w-full bg-black py-20 text-white">
+    <section className="w-full bg-black py-20 text-white overflow-hidden">
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(163, 230, 53, 0.3);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(163, 230, 53, 0.6);
+        }
+      `}</style>
+
       <div className="w-full px-4 xl:px-16 2xl:px-24">
         {/* Tabs */}
-        <div className="flex justify-center mb-10 gap-4">
-          {(["monthly", "early"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-6 py-2 rounded-full font-semibold transition 
-                ${
-                  tab === t
-                    ? "bg-lime-500 text-black shadow-lg"
-                    : "bg-zinc-800 text-gray-400 hover:bg-zinc-700"
-                }`}
-            >
-              {t === "monthly" ? "Monthly" : "Early"}
-            </button>
-          ))}
+        <div className="flex justify-center mb-16">
+          <div className="bg-zinc-900/50 p-1.5 rounded-full flex gap-1 border border-white/5">
+            {(["monthly", "early"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-8 py-3 rounded-full font-bold transition-all duration-300 whitespace-nowrap
+                  ${
+                    tab === t
+                      ? "bg-lime-500 text-black shadow-lg scale-105"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+              >
+                {t === "monthly" ? "Monthly Billing" : "Early Bird Access"}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Cards */}
-        <div className="grid md:gap-4 xl:gap-8 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+        {/* Cards Grid */}
+        <div className="grid gap-6 lg:gap-4 xl:gap-6 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 items-stretch">
           {plans.map((plan) => {
             const activePricing = pricing[plan.id][tab];
+            const isLoaded = loadedImages[plan.id];
+
             return (
               <motion.div
                 key={plan.id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: plan.id * 0.15 }}
-                className="overflow-hidden border border-white/10 shadow-xl flex flex-col md:max-h-[750px]
-             transition duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-lime-500/20"
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.6, delay: plan.id * 0.1 }}
+                className="group flex flex-col h-full rounded-3xl overflow-hidden border border-white/10 bg-zinc-900/20 transition-all duration-500 hover:border-lime-500/40 hover:shadow-[0_20px_40px_-15px_rgba(163,230,53,0.15)]"
               >
-                {/* Top Image */}
-                <div className="h-40 w-full overflow-hidden">
+                {/* Image Container - Adjusted aspect and object position */}
+                <div className="relative aspect-video w-full overflow-hidden bg-zinc-800">
+                  {/* Skeleton Overlay */}
+                  <AnimatePresence>
+                    {!isLoaded && (
+                      <motion.div
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-10"
+                      >
+                        <div className="w-full h-full animate-pulse bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   <img
                     src={plan.image}
                     alt={plan.title}
-                    className="w-full h-full object-cover"
+                    onLoad={() => handleImageLoad(plan.id)}
+                    className={`w-full h-full object-cover object-top transition-all duration-1000 group-hover:scale-110 
+                      ${
+                        isLoaded
+                          ? "opacity-100 scale-100"
+                          : "opacity-0 scale-105"
+                      }`}
                   />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
                 </div>
 
-                {/* Lower content */}
+                {/* Content Area */}
                 <div
-                  className={`flex flex-col justify-between flex-1 bg-gradient-to-b ${plan.color} p-6`}
+                  className={`flex flex-col flex-1 p-6 bg-gradient-to-b ${plan.color}`}
                 >
-                  <h2 className="text-xl 2xl:text-2xl font-bold text-center mb-2">
-                    {plan.title}
-                  </h2>
-                  <p className="text-center mb-2">{plan.description}</p>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-center mb-2 leading-tight min-h-[56px] flex items-center justify-center">
+                      {plan.title}
+                    </h3>
+                    <p className="text-center text-sm text-white/70 mb-6 leading-relaxed min-h-[60px]">
+                      {plan.description}
+                    </p>
 
-                  <p className="text-4xl font-extrabold text-center mb-1">
-                    {activePricing.price}
-                  </p>
-                  <p className="text-center text-gray-300 mb-4">
-                    {tab === "monthly" ? "Billed Monthly" : "Early Pricing"}
-                  </p>
+                    <div className="text-center mb-6 py-4 bg-black/20 rounded-2xl border border-white/5">
+                      <p className="text-4xl font-black mb-1">
+                        {activePricing.price}
+                      </p>
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-white/40">
+                        {tab === "monthly" ? "Per Month" : "One-Time Offer"}
+                      </p>
+                    </div>
 
-                  <button className="w-full text-black bg-white hover:bg-gray-200 font-semibold py-2 rounded-lg transition mb-4">
-                    {activePricing.buttonText}
-                  </button>
+                    <button className="w-full bg-white text-black hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] font-black py-4 rounded-2xl transition-all duration-300 mb-8 shadow-xl">
+                      {activePricing.buttonText}
+                    </button>
+                  </div>
 
-                  <ul
-                    className="mt-2 space-y-2 text-sm text-gray-200 max-h-[250px] overflow-y-auto pr-2 scrollbar-custom"
-                    style={
-                      {
-                        "--thumb":
-                          plan.color.match(/#([0-9A-Fa-f]{6})/)?.[0] ||
-                          "#46911F",
-                      } as React.CSSProperties
-                    } // dynamic thumb color per card
-                  >
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex gap-2 items-start">
-                        <span className="text-lime-400 mt-0.5">➜</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                  {/* Feature List */}
+                  <div className="border-t border-white/10 pt-6">
+                    <p className="text-[10px] uppercase tracking-widest font-bold text-white/40 mb-4">
+                      What&apos;s included:
+                    </p>
+                    <ul className="space-y-4 text-[13px] text-white/80 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                      {plan.features.map((feature, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-3 items-start leading-snug group/item"
+                        >
+                          <div className="mt-1 w-4 h-4 rounded-full bg-lime-500/20 flex items-center justify-center flex-shrink-0 group-hover/item:bg-lime-500/40 transition-colors">
+                            <svg
+                              className="w-2.5 h-2.5 text-lime-400"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={4}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                          <span className="group-hover/item:text-white transition-colors">
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </motion.div>
             );
