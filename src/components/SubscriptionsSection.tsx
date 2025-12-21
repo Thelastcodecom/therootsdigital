@@ -200,7 +200,7 @@ const PricingSection = () => {
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-8 py-3 rounded-full font-bold transition-all duration-300 whitespace-nowrap
+                className={`px-8 py-3 rounded-full font-bold transition-all duration-300 md:whitespace-nowrap
                   ${
                     tab === t
                       ? "bg-lime-500 text-black shadow-lg scale-105"
@@ -217,7 +217,6 @@ const PricingSection = () => {
         <div className="grid gap-6 lg:gap-4 xl:gap-6 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 items-stretch">
           {plans.map((plan) => {
             const activePricing = pricing[plan.id][tab];
-            const isLoaded = loadedImages[plan.id];
 
             return (
               <motion.div
@@ -230,28 +229,14 @@ const PricingSection = () => {
               >
                 {/* Image Container - Adjusted aspect and object position */}
                 <div className="relative aspect-video w-full overflow-hidden bg-zinc-800">
-                  {/* Skeleton Overlay */}
-                  <AnimatePresence>
-                    {!isLoaded && (
-                      <motion.div
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 z-10"
-                      >
-                        <div className="w-full h-full animate-pulse bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={plan.image}
                     alt={plan.title}
                     onLoad={() => handleImageLoad(plan.id)}
-                    className={`w-full h-full object-cover object-top transition-all duration-1000 group-hover:scale-110 
-                      ${
-                        isLoaded
-                          ? "opacity-100 scale-100"
-                          : "opacity-0 scale-105"
-                      }`}
+                    onError={() => handleImageLoad(plan.id)}
+                    className={`w-full h-full object-cover object-top transition-all duration-1000 group-hover:scale-110 `}
                   />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
                 </div>

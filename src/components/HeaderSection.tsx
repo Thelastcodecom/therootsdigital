@@ -75,7 +75,9 @@ const Navbar = () => {
     <>
       {/* ================= NAVBAR ================= */}
       <motion.header
-        className="fixed top-0 left-0 w-full z-50"
+        className={`fixed top-0 left-0 w-full z-50 ${
+          isMobileMenuOpen ? "hidden md:flex" : "flex"
+        }`}
         initial={{ opacity: 0, y: -20 }}
         animate={{
           opacity: 1,
