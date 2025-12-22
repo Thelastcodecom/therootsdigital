@@ -36,11 +36,11 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black">
+    <section className="relative w-full h-screen md:h-[150vh] overflow-hidden bg-black">
       {/* ===========================
           BACKGROUND VIDEO
       ============================ */}
-      <div className="absolute inset-0 h-[75vh] w-full">
+      <div className="absolute inset-0 h-screen w-full">
         <video
           className="w-full h-full object-cover"
           autoPlay
@@ -76,7 +76,6 @@ const Hero = () => {
             ))}
           </h2>
         </div>
-
         {/* Logo + About Section */}
         <div className="relative w-full flex items-end justify-center md:gap-8 gap-12 pb-12">
           {/* Logo */}

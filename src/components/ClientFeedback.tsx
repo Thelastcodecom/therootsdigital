@@ -1,7 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import React, { useState, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
 // --- Data Definition ---
 interface ClientDataType {
@@ -47,7 +52,6 @@ const getVideoId = (url: string): string | null => {
   }
 };
 
-// --- Sub Component: Video Card ---
 const VideoPlayer = ({ client }: { client: ClientDataType }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoId = getVideoId(client.videoLink);
@@ -55,10 +59,10 @@ const VideoPlayer = ({ client }: { client: ClientDataType }) => {
   const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`;
 
   return (
-    <div className="relative w-full aspect-[16/10] max-w-xl mx-auto rounded-2xl overflow-hidden bg-zinc-900 shadow-xl group border border-white/10">
+    <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-zinc-900 shadow-2xl border border-white/10 group">
       {!isPlaying ? (
         <div
-          className="relative w-full h-full cursor-pointer overflow-hidden"
+          className="relative w-full h-full cursor-pointer"
           onClick={() => setIsPlaying(true)}
         >
           <img
@@ -66,10 +70,10 @@ const VideoPlayer = ({ client }: { client: ClientDataType }) => {
             alt={client.videoAlt}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-500 flex items-center justify-center">
-            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white text-black scale-90 group-hover:scale-100 transition-transform duration-500 shadow-xl">
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white text-black transition-transform group-hover:scale-110 shadow-xl">
               <svg
-                className="w-6 h-6 ml-1"
+                className="w-5 h-5 ml-1"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -91,132 +95,132 @@ const VideoPlayer = ({ client }: { client: ClientDataType }) => {
   );
 };
 
-// --- Main Card Component ---
-const FeedbackCard = ({
-  client,
-  index,
-}: {
-  client: ClientDataType;
-  index: number;
-}) => {
-  const containerRef = useRef(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.3 });
-
-  return (
-    <motion.div
-      ref={containerRef}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 1, ease: [0.19, 1, 0.22, 1], delay: index * 0.1 }}
-      className={`flex flex-col ${
-        index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-      } gap-10 lg:gap-20 mb-20 lg:mb-32 items-center`}
-    >
-      {/* Text Content */}
-      <div className="w-full lg:w-1/2 space-y-8">
-        <div className="space-y-4">
-          <div className="text-lime-400 text-xs font-bold uppercase tracking-[0.2em]">
-            Client Success
-          </div>
-          <h3 className="text-2xl md:text-3xl lg:text-4xl font-medium tracking-tight leading-snug text-zinc-100">
-            "{client.quote}"
-          </h3>
-        </div>
-
-        <div className="flex flex-wrap gap-x-12 gap-y-6 pt-8 border-t border-white/5">
-          <div className="min-w-[120px]">
-            <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">
-              Client
-            </p>
-            <p className="text-base font-semibold">{client.name}</p>
-            <p className="text-xs text-white/50">{client.designation}</p>
-          </div>
-          <div className="min-w-[120px]">
-            <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">
-              Scope
-            </p>
-            <p className="text-base font-semibold text-lime-400/90">
-              {client.work}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Video Side */}
-      <div className="w-full lg:w-1/2">
-        <VideoPlayer client={client} />
-      </div>
-    </motion.div>
-  );
-};
-
 const ClientFeedback = () => {
-  return (
-    <section className="relative bg-black text-white py-24 md:py-40 overflow-hidden">
-      {/* Soft Ambient Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[20%] left-[10%] w-[30%] h-[30%] bg-lime-500/5 blur-[100px] rounded-full" />
-        <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] bg-lime-500/5 blur-[100px] rounded-full" />
-      </div>
+  const containerRef = useRef<HTMLDivElement>(null);
 
-      <div className="container mx-auto px-6 lg:px-16 relative z-10">
-        {/* Feedback List */}
-        <div className="flex flex-col">
-          {clientData.map((client, index) => (
-            <FeedbackCard key={client.name} client={client} index={index} />
-          ))}
+  // Create a scroll trigger for the whole section.
+  // We use 300vh height to create "stickiness" while cycling through videos.
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Calculate which video to show based on scroll progress
+  // 0 to 0.5 = First video, 0.5 to 1 = Second video
+  const currentIndex = useTransform(
+    scrollYProgress,
+    [0, 0.45, 0.55, 1],
+    [0, 0, 1, 1]
+  );
+
+  // We use a state to handle the AnimatePresence triggers
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  // Update local state when scroll cross-fades
+  currentIndex.on("change", (latest) => {
+    const rounded = Math.round(latest);
+    if (rounded !== activeIdx) setActiveIdx(rounded);
+  });
+
+  const client = clientData[activeIdx];
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative h-[200vh] bg-black text-white"
+    >
+      {/* Sticky Viewport Container */}
+      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-6 lg:px-16">
+        {/* Ambient Background */}
+        <div className="absolute inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-[10%] left-[10%] w-[40vw] h-[40vw] bg-lime-500/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[10%] right-[10%] w-[40vw] h-[40vw] bg-lime-500/10 blur-[120px] rounded-full" />
         </div>
 
-        {/* Minimal Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="pt-20 border-t border-white/5 flex flex-col md:flex-row justify-between items-end gap-12"
-        >
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.3em] text-white/30 font-bold">
-              The Standard
-            </p>
-            <div className="flex gap-10">
-              <div className="flex flex-col">
-                <span className="text-3xl font-light">
-                  98<span className="text-lime-400">%</span>
-                </span>
-                <span className="text-[10px] uppercase text-white/40 tracking-widest">
-                  Score
-                </span>
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeIdx}
+              initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 1.02, filter: "blur(10px)" }}
+              transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+              className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center"
+            >
+              {/* Left Side: Content */}
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="flex items-center gap-3"
+                  >
+                    <span className="w-8 h-[1px] bg-lime-400" />
+                    <span className="text-lime-400 text-xs font-bold uppercase tracking-[0.3em]">
+                      Client Story {activeIdx + 1}
+                    </span>
+                  </motion.div>
+
+                  <h3 className="text-2xl md:text-4xl font-medium tracking-tight leading-[1.2] text-zinc-100 italic">
+                    "{client.quote}"
+                  </h3>
+                </div>
+
+                <div className="flex flex-wrap gap-x-12 gap-y-6 pt-10 border-t border-white/10">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">
+                      Partner
+                    </p>
+                    <p className="text-lg font-semibold">{client.name}</p>
+                    <p className="text-sm text-white/50">
+                      {client.designation}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">
+                      Impact
+                    </p>
+                    <p className="text-lg font-semibold text-lime-400/90">
+                      {client.work}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-3xl font-light">
-                  200<span className="text-lime-400">+</span>
-                </span>
-                <span className="text-[10px] uppercase text-white/40 tracking-widest">
-                  Clients
-                </span>
+
+              {/* Right Side: Video */}
+              <div className="relative group">
+                <VideoPlayer client={client} />
+                {/* Decorative Corner */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-lime-400/20 rounded-tr-3xl pointer-events-none" />
               </div>
-            </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Scroll Progress & UI Elements */}
+        <div className="absolute bottom-12 left-6 lg:left-16 right-6 lg:right-16 flex justify-between items-center pointer-events-none">
+          <div className="flex gap-2">
+            {clientData.map((_, i) => (
+              <div
+                key={i}
+                className={`h-1 transition-all duration-500 rounded-full ${
+                  activeIdx === i ? "w-12 bg-lime-400" : "w-4 bg-white/20"
+                }`}
+              />
+            ))}
           </div>
 
-          <button className="group relative flex items-center gap-4 text-sm font-bold uppercase tracking-widest py-2">
-            <span className="relative z-10">Partner with us</span>
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-lime-400 group-hover:text-black transition-all duration-300">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
+          <div className="flex flex-col items-end">
+            <div className="w-px h-12 bg-gradient-to-b from-lime-400 to-transparent relative">
+              <motion.div
+                animate={{ y: [0, 20, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute top-0 left-[-2px] w-1 h-1 bg-white rounded-full"
+              />
             </div>
-          </button>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );

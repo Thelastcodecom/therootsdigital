@@ -80,7 +80,7 @@ const ValueSection = () => {
             src="/images/astronaut.webp"
             alt="Astronaut"
             className={`
-              ${isMobile ? "w-[120px]" : "w-[180px]"} sm:w-[220px] md:w-[320px] lg:w-[400px] xl:w-[480px] 2xl:w-[550px]
+              ${isMobile ? "w-[150px]" : "w-[180px]"} sm:w-[220px] md:w-[300px] lg:w-[380px] xl:w-[450px] 2xl:w-[550px]
               h-auto object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.15)] pointer-events-none
             `}
           />

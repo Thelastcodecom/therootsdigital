@@ -167,11 +167,6 @@ const pricing: Record<number, Pricing> = {
 
 const PricingSection = () => {
   const [tab, setTab] = useState<"monthly" | "early">("monthly");
-  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
-
-  const handleImageLoad = (id: number) => {
-    setLoadedImages((prev) => ({ ...prev, [id]: true }));
-  };
 
   return (
     <section className="w-full bg-black py-20 text-white overflow-hidden mt-15">
@@ -230,12 +225,8 @@ const PricingSection = () => {
                 {/* Image Container - Adjusted aspect and object position */}
                 <div className="relative aspect-video w-full overflow-hidden bg-zinc-800">
                   <img
-                    loading="lazy"
-                    decoding="async"
                     src={plan.image}
                     alt={plan.title}
-                    onLoad={() => handleImageLoad(plan.id)}
-                    onError={() => handleImageLoad(plan.id)}
                     className={`w-full h-full object-cover object-top transition-all duration-1000 group-hover:scale-110 `}
                   />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
