@@ -1,28 +1,38 @@
 "use client";
-import styles from "./PortfolioSection.module.css";
-import { useState } from "react";
-import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+
+import React, { useState } from "react";
+import { motion, Variants, AnimatePresence } from "framer-motion";
 
 // Define the structure for a project item
 type ProjectItem = {
   type: "image" | "video";
   src: string;
   poster?: string; // Thumbnail for videos
-  title?: string; // Optional title for accessibility/overlay
+  title?: string; // Optional title
 };
 
-// Scroll animation variants
+// Animation variants - triggering on load/tab change to prevent scroll flickering
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 20 },
+  visible: (index: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 1, 0.5, 1],
+      delay: index * 0.05, // Subtle stagger
+    },
+  }),
 };
 
 const headingVariants: Variants = {
   hidden: { opacity: 0, y: 60 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: "easeOut" },
+  },
 };
-
 
 export default function PortfolioGrid() {
   const [activeTab, setActiveTab] = useState("Web Design");
@@ -39,6 +49,7 @@ export default function PortfolioGrid() {
     "SEO",
   ];
 
+  // RESTORED: Your original data and local paths
   const projectsByCategory: Record<string, ProjectItem[]> = {
     "Web Design": [
       { type: "image", src: "/images/portfolio-images/web/web 1.webp" },
@@ -130,9 +141,6 @@ export default function PortfolioGrid() {
       case "Logo Design":
       case "Branding":
         return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
-      case "Web Design":
-      case "Mobile App":
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
       default:
         return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
     }
@@ -145,7 +153,7 @@ export default function PortfolioGrid() {
           className="text-5xl md:text-7xl lg:text-5xl xl:text-8xl text-white mb-10 font-bold tracking-tight"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
+          viewport={{ once: true }}
           variants={headingVariants}
         >
           Creative Portfolio
@@ -154,54 +162,57 @@ export default function PortfolioGrid() {
         {/* Category Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-16 md:max-w-4xl xl:max-w-6xl mx-auto">
           {categories.map((category) => (
-            <motion.button
+            <button
               key={category}
               onClick={() => setActiveTab(category)}
-              data-active={activeTab === category} // ← add this
-              className={`${
-                styles.tabButton
-              } border border-lime-accent text-xs ${
-                activeTab === category ? "bg-lime-accent text-black" : ""
+              className={`px-6 py-2 rounded-full text-xs transition-all duration-300 border ${
+                activeTab === category
+                  ? "bg-lime-400 border-lime-400 text-black"
+                  : "border-white/10 text-white hover:border-lime-400/50"
               }`}
             >
-              <span className={styles.glowBorder} />
               {category}
-            </motion.button>
+            </button>
           ))}
         </div>
 
         {/* Grid Container */}
         <div className="w-full min-h-[400px]">
-          {currentProjects.length > 0 ? (
-            <div className={`grid gap-8 ${getGridClass(activeTab)}`}>
-              {currentProjects.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: false, amount: 0.3 }}
-                  variants={cardVariants}
-                >
-                  <PortfolioCard
-                    category={activeTab}
-                    item={item}
-                    index={index}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-              <p className="text-xl">No projects found for {activeTab}</p>
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              className={`grid gap-8 ${getGridClass(activeTab)}`}
+            >
+              {currentProjects.length > 0 ? (
+                currentProjects.map((item, index) => (
+                  <motion.div
+                    key={`${activeTab}-${index}`}
+                    custom={index}
+                    variants={cardVariants}
+                  >
+                    <PortfolioCard
+                      category={activeTab}
+                      item={item}
+                      index={index}
+                    />
+                  </motion.div>
+                ))
+              ) : (
+                <div className="col-span-full py-20 text-gray-500">
+                  <p className="text-xl">No projects found for {activeTab}</p>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>
   );
 }
 
-// ---- Keep your original PortfolioCard logic intact ----
 function PortfolioCard({
   category,
   item,
@@ -211,112 +222,39 @@ function PortfolioCard({
   item: ProjectItem;
   index: number;
 }) {
-  if (category === "Web Design" || category === "Social Media Management") {
-    return (
-      <div className="group relative w-full h-[400px] md:h-[550px] rounded-2xl overflow-hidden border border-2 border-lime-accent bg-zinc-900">
-        <div className="absolute inset-0 overflow-hidden">
-          {item.type === "video" ? (
-            <video
-              src={item.src}
-              className="w-full h-full object-cover"
-              muted
-              playsInline
-              loop
-              autoPlay
-            />
-          ) : (
-            <Image
-              src={item.src}
-              alt={`Web Design Project ${index + 1}`}
-              width={600}
-              height={1200}
-              className="w-full h-auto object-cover object-top transition-transform duration-[5s] ease-linear group-hover:-translate-y-[calc(100%-500px)]"
-            />
-          )}
-        </div>
-      </div>
-    );
-  }
+  const isTall =
+    category === "Web Design" || category === "Social Media Management";
 
-  if (category === "Video Editing" || category === "Video Animation") {
-    return (
-      <div className="group relative w-full aspect-video rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 cursor-pointer">
+  return (
+    <div
+      className={`group relative w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 ${
+        isTall ? "h-[400px] md:h-[550px]" : "aspect-square md:aspect-video"
+      }`}
+    >
+      <div className="absolute inset-0 overflow-hidden">
         {item.type === "video" ? (
-          <>
-            <video
-              src={item.src}
-              poster={item.poster}
-              muted
-              playsInline
-              loop
-              autoPlay
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300 opacity-0" />
-          </>
-        ) : (
-          <Image
+          <video
             src={item.src}
-            alt={`Video Project ${index + 1}`}
-            width={800}
-            height={450}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            poster={item.poster}
+            className="w-full h-full object-cover"
+            muted
+            playsInline
+            loop
+            autoPlay
+          />
+        ) : (
+          /* Using standard img for compatibility in this preview environment */
+          <img
+            src={item.src}
+            alt={`${category} Project ${index + 1}`}
+            className={`w-full object-cover object-top transition-transform duration-[5s] ease-linear ${
+              isTall
+                ? "h-auto group-hover:-translate-y-[calc(100%-400px)] md:group-hover:-translate-y-[calc(100%-550px)]"
+                : "h-full group-hover:scale-105"
+            }`}
           />
         )}
       </div>
-    );
-  }
-
-  if (category === "Branding" || category === "Logo Design") {
-    return (
-      <div className="group relative w-full aspect-square rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-lime-accent/50 transition-colors">
-        <div className="flex items-center justify-center w-full h-full bg-zinc-900 group-hover:bg-zinc-800 transition-colors">
-          {item.type === "video" ? (
-            <video
-              src={item.src}
-              className="w-full h-full object-cover p-0 transition-transform duration-500 group-hover:scale-105"
-              muted
-              playsInline
-              loop
-              autoPlay
-            />
-          ) : (
-            <Image
-              src={item.src}
-              alt={`Branding Project ${index + 1}`}
-              width={400}
-              height={400}
-              className="w-full h-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-110"
-            />
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  if (category === "SEO") {
-    return (
-      <div className="group relative w-full h-[500px] rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900">
-        <Image
-          src={item.src}
-          alt={`App Project ${index + 1}`}
-          width={500}
-          height={800}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className="group relative w-full aspect-4/3 rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
-      <Image
-        src={item.src}
-        alt={`Project ${index + 1}`}
-        width={800}
-        height={600}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import TestimonialsSection from "@/components/TestimonialSection";
 import SubscriptionsSection from "@/components/SubscriptionsSection";
 
 
+
 export default function Home() {
   return (
     <>
