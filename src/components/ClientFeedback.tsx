@@ -163,7 +163,7 @@ const ClientFeedback = () => {
                   </motion.div>
 
                   <h3 className="text-2xl md:text-4xl font-medium tracking-tight leading-[1.2] text-zinc-100 italic">
-                    "{client.quote}"
+                    &quot;{client.quote}&quot;
                   </h3>
                 </div>
 

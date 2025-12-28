@@ -9,6 +9,8 @@ import SubscriptionsSection from "@/components/SubscriptionsSection";
 
 
 
+
+
 export default function Home() {
   return (
     <>
@@ -20,7 +22,6 @@ export default function Home() {
       <ClientFeedback />
       <TestimonialsSection />
       <SubscriptionsSection />
-
     </>
   );
 }

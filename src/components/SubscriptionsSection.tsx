@@ -1,7 +1,8 @@
 "use client";
 
 import  { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import SubscriptionPopup from "@/components/SubscriptionForm";
 
 interface Plan {
   id: number;
@@ -167,6 +168,8 @@ const pricing: Record<number, Pricing> = {
 
 const PricingSection = () => {
   const [tab, setTab] = useState<"monthly" | "early">("monthly");
+const [isPopupOpen, setIsPopupOpen] = useState(false);
+const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   return (
     <section className="w-full bg-black py-20 text-white overflow-hidden mt-15">
@@ -253,7 +256,13 @@ const PricingSection = () => {
                       </p>
                     </div>
 
-                    <button className="w-full bg-white text-black hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] font-black py-4 rounded-2xl transition-all duration-300 mb-8 shadow-xl">
+                    <button
+                      onClick={() => {
+                        setSelectedPlan(plan);
+                        setIsPopupOpen(true);
+                      }}
+                      className="w-full bg-white text-black hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] font-black py-4 rounded-2xl transition-all duration-300 mb-8 shadow-xl"
+                    >
                       {activePricing.buttonText}
                     </button>
                   </div>
@@ -297,6 +306,17 @@ const PricingSection = () => {
           })}
         </div>
       </div>
+      {selectedPlan && (
+        <SubscriptionPopup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          plan={{
+            ...selectedPlan,
+            price: pricing[selectedPlan.id][tab].price,
+            billingType: tab,
+          }}
+        />
+      )}
     </section>
   );
 };
