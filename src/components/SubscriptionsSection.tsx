@@ -18,6 +18,11 @@ interface Pricing {
   early: { price: string; buttonText: string };
 }
 
+interface PopupPlan extends Plan {
+  price: string;
+  billingType: "monthly" | "early";
+}
+
 const plans: Plan[] = [
   {
     id: 1,
@@ -161,15 +166,16 @@ const pricing: Record<number, Pricing> = {
     early: { price: "$130", buttonText: "Go Extreme Early" },
   },
   5: {
-    monthly: { price: "Custom", buttonText: "Launch My Website" },
-    early: { price: "Custom", buttonText: "Launch Early" },
+    monthly: { price: "Custom", buttonText: "Let's talk" },
+    early: { price: "Custom", buttonText: "Let's discuss" },
   },
 };
 
 const PricingSection = () => {
   const [tab, setTab] = useState<"monthly" | "early">("monthly");
 const [isPopupOpen, setIsPopupOpen] = useState(false);
-const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+const [selectedPlan, setSelectedPlan] = useState<PopupPlan | null>(null);
+
 
   return (
     <section className="w-full bg-black py-20 text-white overflow-hidden mt-15">
@@ -258,7 +264,11 @@ const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
                     <button
                       onClick={() => {
-                        setSelectedPlan(plan);
+                        setSelectedPlan({
+                          ...plan,
+                          price: pricing[plan.id][tab].price,
+                          billingType: tab,
+                        });
                         setIsPopupOpen(true);
                       }}
                       className="w-full bg-white text-black hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] font-black py-4 rounded-2xl transition-all duration-300 mb-8 shadow-xl"
@@ -310,11 +320,7 @@ const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
         <SubscriptionPopup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
-          plan={{
-            ...selectedPlan,
-            price: pricing[selectedPlan.id][tab].price,
-            billingType: tab,
-          }}
+          plan={selectedPlan}
         />
       )}
     </section>
