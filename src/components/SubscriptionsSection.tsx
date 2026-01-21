@@ -1,15 +1,13 @@
 "use client";
 
-import  { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import SubscriptionPopup from "@/components/SubscriptionForm";
+import SubscriptionPopup from "./SubscriptionForm";
 
 interface Plan {
   id: number;
   title: string;
   description: string;
-  color: string;
-  image: string;
   features: string[];
 }
 
@@ -29,8 +27,6 @@ const plans: Plan[] = [
     title: "Starter Launchpad",
     description:
       "Get your business online quickly with all the essentials to take off Successfully Today.",
-    color: "from-[#46911F] to-[#2A5212]",
-    image: "/images/subscription-images/1.jpg",
     features: [
       "3 page or multi-section starter website",
       "Mobile & tablet responsive design",
@@ -53,8 +49,6 @@ const plans: Plan[] = [
     title: "Orbit Essentials",
     description:
       "Build a strong, reliable digital presence with the features every business needs",
-    color: "from-[#0D1B3A] to-[#091123]",
-    image: "/images/subscription-images/2.webp",
     features: [
       "8 page or multi-section website",
       "Professional website design with modern layout",
@@ -75,8 +69,6 @@ const plans: Plan[] = [
     title: "Expansion Pro",
     description:
       "Go beyond the basics and establish a powerful brand presence online.",
-    color: "from-[#3A003F] to-[#19001C]",
-    image: "/images/subscription-images/3.webp",
     features: [
       "Custom website designed for your industry",
       "More than 10 pages or multi section website",
@@ -99,8 +91,6 @@ const plans: Plan[] = [
     id: 4,
     title: "Extreme E-Commerce",
     description: "A complete, online store designed for smooth, scalable sales",
-    color: "from-[#4A0C0C] to-[#260606]",
-    image: "/images/subscription-images/4.webp",
     features: [
       "Fully customized e-commerce website store",
       "10x custom designed website inner pages",
@@ -129,8 +119,6 @@ const plans: Plan[] = [
     id: 5,
     title: "Custom Website / Web App",
     description: "Custom Websites & Web Apps crafted to match your vision.",
-    color: "from-[#0F2725] to-[#071312]",
-    image: "/images/subscription-images/5.webp",
     features: [
       "Fully custom website design (UI/UX, no templates)",
       "Web application development (dashboards, booking systems, CRMs, etc.)",
@@ -173,12 +161,39 @@ const pricing: Record<number, Pricing> = {
 
 const PricingSection = () => {
   const [tab, setTab] = useState<"monthly" | "early">("monthly");
-const [isPopupOpen, setIsPopupOpen] = useState(false);
-const [selectedPlan, setSelectedPlan] = useState<PopupPlan | null>(null);
-
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<PopupPlan | null>(null);
 
   return (
-    <section className="w-full bg-black py-20 text-white overflow-hidden mt-15">
+    <section className="w-full bg-black py-20 text-white overflow-hidden mt-15 relative">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-0 left-1/4 w-96 h-96 bg-lime-500/5 rounded-full blur-3xl"
+          animate={{
+            y: [0, 100, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-0 right-1/4 w-96 h-96 bg-lime-500/5 rounded-full blur-3xl"
+          animate={{
+            y: [0, -100, 0],
+            scale: [1, 1.3, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
@@ -194,32 +209,64 @@ const [selectedPlan, setSelectedPlan] = useState<PopupPlan | null>(null);
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: rgba(163, 230, 53, 0.6);
         }
+        
+        @keyframes shimmer {
+          0% {
+            background-position: -1000px 0;
+          }
+          100% {
+            background-position: 1000px 0;
+          }
+        }
+        
+        .shimmer {
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(163, 230, 53, 0.1) 50%,
+            transparent 100%
+          );
+          background-size: 1000px 100%;
+          animation: shimmer 3s infinite;
+        }
       `}</style>
 
-      <div className="w-full px-4 xl:px-16 2xl:px-24">
+      <div className="w-full px-4 xl:px-16 2xl:px-24 relative z-10">
         {/* Tabs */}
-        <div className="flex justify-center mb-16">
-          <div className="bg-zinc-900/50 p-1.5 rounded-full flex gap-1 border border-white/5">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex justify-center mb-16"
+        >
+          <div className="bg-zinc-900/50 p-1.5 rounded-full flex gap-1 border border-white/5 backdrop-blur-xl">
             {(["monthly", "early"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-8 py-3 rounded-full font-bold transition-all duration-300 md:whitespace-nowrap
+                className={`px-8 py-3 rounded-full font-bold transition-all duration-150 ease-out md:whitespace-nowrap relative overflow-hidden
                   ${
                     tab === t
                       ? "bg-lime-500 text-black shadow-lg scale-105"
                       : "text-gray-400 hover:text-white"
                   }`}
               >
+                {tab === t && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-lime-500 -z-10"
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  />
+                )}
                 {t === "monthly" ? "Monthly Billing" : "Early Bird Access"}
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Cards Grid */}
         <div className="grid gap-6 lg:gap-4 xl:gap-6 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 items-stretch">
-          {plans.map((plan) => {
+          {plans.map((plan, index) => {
             const activePricing = pricing[plan.id][tab];
 
             return (
@@ -227,70 +274,189 @@ const [selectedPlan, setSelectedPlan] = useState<PopupPlan | null>(null);
                 key={plan.id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.6, delay: plan.id * 0.1 }}
-                className="group flex flex-col h-full rounded-3xl overflow-hidden border border-white/10 bg-zinc-900/20 transition-all duration-500 hover:border-lime-500/40 hover:shadow-[0_20px_40px_-15px_rgba(163,230,53,0.15)]"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.05,
+                  ease: [0.22, 1, 0.36, 1]
+                }}
+                whileHover={{ scale: 1.015, y: -4 }}
+                className="group flex flex-col h-full rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-b from-zinc-900/50 to-zinc-900/30 backdrop-blur-sm transition-all duration-100 ease-out hover:border-lime-500/50 hover:shadow-[0_20px_80px_-15px_rgba(163,230,53,0.4)] relative will-change-transform"
               >
-                {/* Image Container - Adjusted aspect and object position */}
-                <div className="relative aspect-video w-full overflow-hidden bg-zinc-800">
-                  <img
-                    src={plan.image}
-                    alt={plan.title}
-                    className={`w-full h-full object-cover object-top transition-all duration-1000 group-hover:scale-110 `}
+                {/* Animated border glow */}
+                <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out pointer-events-none">
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-lime-500/20 via-lime-400/20 to-lime-500/20 shimmer" />
+                </div>
+
+                {/* Floating particles effect on hover */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-150 ease-out">
+                  {[...Array(3)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-1 h-1 bg-lime-400 rounded-full"
+                      style={{
+                        left: `${20 + i * 30}%`,
+                        top: "100%",
+                      }}
+                      animate={{
+                        y: [0, -300],
+                        opacity: [0, 1, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        delay: i * 0.3,
+                        repeat: Infinity,
+                        ease: "easeOut",
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Header Section */}
+                <div className="relative p-8 bg-gradient-to-br from-zinc-800/50 to-zinc-900/50 group-hover:from-zinc-800/70 group-hover:to-zinc-900/70 transition-all duration-150 ease-out">
+                  {/* Animated corner accent */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/5 rounded-bl-full transition-all duration-150 ease-out" />
+
+                  {/* Glowing orb */}
+                  <motion.div
+                    className="absolute top-4 right-4 w-2 h-2 bg-lime-400 rounded-full"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.5, 1, 0.5],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
+
+                  <div className="relative z-10">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ delay: 0.15 + index * 0.05, duration: 0.3, ease: "easeOut" }}
+                      className="inline-block px-4 py-1.5 bg-black/40 backdrop-blur-sm rounded-full border border-lime-500/30 mb-4"
+                    >
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-lime-400">
+                        Plan {plan.id}
+                      </span>
+                    </motion.div>
+
+                    <motion.h3
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 + index * 0.05, duration: 0.3, ease: "easeOut" }}
+                      className="text-2xl font-black mb-3 leading-tight group-hover:text-lime-400 transition-colors duration-150 ease-out"
+                    >
+                      {plan.title}
+                    </motion.h3>
+
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ delay: 0.25 + index * 0.05, duration: 0.3, ease: "easeOut" }}
+                      className="text-sm text-white/80 leading-relaxed"
+                    >
+                      {plan.description}
+                    </motion.p>
+                  </div>
+                </div>
+
+                {/* Pricing Section */}
+                <div className="px-8 py-6 bg-zinc-900/70 border-y border-white/5 relative overflow-hidden">
+                  {/* Animated background line */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-lime-500/10 to-transparent"
+                    animate={{
+                      x: ["-100%", "100%"],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+
+                  <div className="relative z-10 flex items-end justify-center gap-2">
+                    <motion.span
+                      key={`${plan.id}-${tab}`}
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="text-5xl font-black bg-gradient-to-r from-lime-400 to-lime-500 bg-clip-text text-transparent"
+                    >
+                      {activePricing.price}
+                    </motion.span>
+                    {activePricing.price !== "Custom" && (
+                      <span className="text-white/40 text-sm font-bold mb-2">
+                        /{tab === "monthly" ? "mo" : "once"}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-center text-[11px] uppercase tracking-wider font-bold text-white/30 mt-2">
+                    {tab === "monthly" ? "Monthly Billing" : "One-Time Payment"}
+                  </p>
                 </div>
 
                 {/* Content Area */}
-                <div
-                  className={`flex flex-col flex-1 p-6 bg-gradient-to-b ${plan.color}`}
-                >
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-center mb-2 leading-tight min-h-[56px] flex items-center justify-center">
-                      {plan.title}
-                    </h3>
-                    <p className="text-center text-sm text-white/70 mb-6 leading-relaxed min-h-[60px]">
-                      {plan.description}
-                    </p>
-
-                    <div className="text-center mb-6 py-4 bg-black/20 rounded-2xl border border-white/5">
-                      <p className="text-4xl font-black mb-1">
-                        {activePricing.price}
-                      </p>
-                      <p className="text-[10px] uppercase tracking-widest font-bold text-white/40">
-                        {tab === "monthly" ? "Per Month" : "One-Time Offer"}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setSelectedPlan({
-                          ...plan,
-                          price: pricing[plan.id][tab].price,
-                          billingType: tab,
-                        });
-                        setIsPopupOpen(true);
+                <div className="flex flex-col flex-1 p-8">
+                  {/* CTA Button */}
+                  <motion.button
+                    onClick={() => {
+                      setSelectedPlan({
+                        ...plan,
+                        price: pricing[plan.id][tab].price,
+                        billingType: tab,
+                      });
+                      setIsPopupOpen(true);
+                    }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ duration: 0.1, ease: "easeOut" }}
+                    className="w-full bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-400 hover:to-lime-500 text-black font-black py-4 rounded-xl transition-all duration-150 ease-out mb-8 shadow-lg shadow-lime-500/20 group-hover:shadow-lime-500/50 relative overflow-hidden"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0"
+                      animate={{
+                        x: ["-100%", "200%"],
                       }}
-                      className="w-full bg-white text-black hover:bg-lime-500 hover:scale-[1.02] active:scale-[0.98] font-black py-4 rounded-2xl transition-all duration-300 mb-8 shadow-xl"
-                    >
-                      {activePricing.buttonText}
-                    </button>
-                  </div>
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatDelay: 1,
+                      }}
+                    />
+                    <span className="relative z-10">{activePricing.buttonText}</span>
+                  </motion.button>
 
                   {/* Feature List */}
-                  <div className="border-t border-white/10 pt-6">
-                    <p className="text-[10px] uppercase tracking-widest font-bold text-white/40 mb-4">
-                      What&apos;s included:
-                    </p>
-                    <ul className="space-y-4 text-[13px] text-white/80 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-5">
+                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-white/40">
+                        Features
+                      </span>
+                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                    </div>
+
+                    <ul className="space-y-3 text-[13px] text-white/70 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
                       {plan.features.map((feature, i) => (
-                        <li
+                        <motion.li
                           key={i}
+                          initial={{ opacity: 0, x: -10 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.02, duration: 0.2, ease: "easeOut" }}
                           className="flex gap-3 items-start leading-snug group/item"
                         >
-                          <div className="mt-1 w-4 h-4 rounded-full bg-lime-500/20 flex items-center justify-center flex-shrink-0 group-hover/item:bg-lime-500/40 transition-colors">
+                          <motion.div
+                            whileHover={{ rotate: 360, scale: 1.15 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="mt-0.5 w-5 h-5 rounded-md bg-gradient-to-br from-lime-500/20 to-lime-600/20 flex items-center justify-center flex-shrink-0 group-hover/item:from-lime-500/40 group-hover/item:to-lime-600/40 transition-all duration-100 ease-out border border-lime-500/20"
+                          >
                             <svg
-                              className="w-2.5 h-2.5 text-lime-400"
+                              className="w-3 h-3 text-lime-400"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -298,25 +464,36 @@ const [selectedPlan, setSelectedPlan] = useState<PopupPlan | null>(null);
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                strokeWidth={4}
+                                strokeWidth={3}
                                 d="M5 13l4 4L19 7"
                               />
                             </svg>
-                          </div>
-                          <span className="group-hover/item:text-white transition-colors">
+                          </motion.div>
+                          <span className="group-hover/item:text-white transition-colors duration-100 ease-out">
                             {feature}
                           </span>
-                        </li>
+                        </motion.li>
                       ))}
                     </ul>
                   </div>
                 </div>
+
+                {/* Bottom accent line */}
+                <motion.div
+                  className="h-1 bg-gradient-to-r from-lime-500/50 via-lime-400 to-lime-500/50"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 + index * 0.05, ease: "easeOut" }}
+                />
               </motion.div>
             );
           })}
         </div>
       </div>
-      {selectedPlan && (
+
+      {/* Popup - Keep original logic unchanged */}
+      {selectedPlan &&  (
         <SubscriptionPopup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
