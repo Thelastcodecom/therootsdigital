@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 
 // Note: Ensure your global CSS or tailwind config handles .lime-accent if needed.
 // For this file, I'm using lime-400 as a fallback for the accent color.
@@ -114,9 +115,11 @@ export default function ScrollRevealSection() {
                       translateX: "-50%",
                     }}
                   >
-                    <img
+                    <Image
                       src={img.src}
                       alt="The Roots Digital Showcase"
+                      width={800} // default width (can adjust)
+                      height={600} // default height (can adjust)
                       className="w-full h-full object-cover"
                     />
                     {/* Subtle inner glow to define the phone edges */}
