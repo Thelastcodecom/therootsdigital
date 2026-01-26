@@ -106,78 +106,78 @@ const ContactPage: React.FC = () => {
   const skypeRef = useRef<HTMLInputElement>(null);
   const companyRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
-  
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
 
-  const newErrors = {
-    name: !nameRef.current?.value.trim(),
-    email: !emailRef.current?.value.trim(),
-    skype: !skypeRef.current?.value.trim(),
-    company: !companyRef.current?.value.trim(),
-    message: !messageRef.current?.value.trim(),
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  setErrors(newErrors);
-
-  const hasErrors = Object.values(newErrors).some(Boolean);
-
-  if (!hasErrors) {
-    // Split full name into firstName + lastName
-    const fullName = nameRef.current?.value.trim() || "";
-    const [firstName, ...lastNameParts] = fullName.split(" ");
-    const lastName = lastNameParts.join(" ") || "-";
-
-    const payload = {
-      firstName,
-      lastName,
-      email: emailRef.current?.value.trim(),
-      phone: skypeRef.current?.value.trim(),
-      message: messageRef.current?.value.replace(/\s+/g, " "),
-      planId: null, // Contact form has no plan
+    const newErrors = {
+      name: !nameRef.current?.value.trim(),
+      email: !emailRef.current?.value.trim(),
+      skype: !skypeRef.current?.value.trim(),
+      company: !companyRef.current?.value.trim(),
+      message: !messageRef.current?.value.trim(),
     };
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    setErrors(newErrors);
 
-      const result = await res.json();
+    const hasErrors = Object.values(newErrors).some(Boolean);
 
-      if (res.ok && result.success) {
-        alert("Message sent successfully!");
-        // Clear form
-        nameRef.current!.value = "";
-        emailRef.current!.value = "";
-        skypeRef.current!.value = "";
-        companyRef.current!.value = "";
-        messageRef.current!.value = "";
-        setErrors({
-          name: false,
-          email: false,
-          skype: false,
-          company: false,
-          message: false,
+    if (!hasErrors) {
+      // Split full name into firstName + lastName
+      const fullName = nameRef.current?.value.trim() || "";
+      const [firstName, ...lastNameParts] = fullName.split(" ");
+      const lastName = lastNameParts.join(" ") || "-";
+
+      const payload = {
+        firstName,
+        lastName,
+        email: emailRef.current?.value.trim(),
+        phone: skypeRef.current?.value.trim(),
+        message: messageRef.current?.value.replace(/\s+/g, " "),
+        planId: null, // Contact form has no plan
+      };
+
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
-      } else {
-        console.error(result.error);
-        alert("Failed to send message. Try again later.");
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          alert("Message sent successfully!");
+          // Clear form
+          nameRef.current!.value = "";
+          emailRef.current!.value = "";
+          skypeRef.current!.value = "";
+          companyRef.current!.value = "";
+          messageRef.current!.value = "";
+          setErrors({
+            name: false,
+            email: false,
+            skype: false,
+            company: false,
+            message: false,
+          });
+        } else {
+          console.error(result.error);
+          alert("Failed to send message. Try again later.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Try again later.");
       }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Try again later.");
     }
-  }
-};
+  };
 
   const handleInputChange = (field: keyof typeof errors) => {
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: false }));
+      setErrors((prev) => ({ ...prev, [field]: false }));
     }
   };
-  
+
   return (
     <div className="bg-black text-white min-h-screen font-sans pt-20">
       {/* Custom Keyframes for the required animations */}
@@ -212,20 +212,22 @@ const ContactPage: React.FC = () => {
 
       {/* Header Section */}
       <div className="text-center pt-20 pb-10">
-        <h1 className="text-xl tracking-[0.2rem] font-marcellus">CONTACT</h1>
-        <p className="text-xs mt-2 opacity-60 tracking-widest font-outfit">
+        <h1 className="text-xl md:text-2xl lg:text-3xl tracking-[0.2rem] font-marcellus">
+          CONTACT
+        </h1>
+        <p className="text-xs md:text-sm lg:text-base mt-2 opacity-60 tracking-widest font-outfit">
           THE ROOTS DIGITAL &gt; CONTACT
         </p>
       </div>
       <hr className="border-[#242424]" />
 
-      <div className="max-w-5xl mx-auto px-6 mt-16">
+      <div className="mx-auto px-6 mt-16 md:max-w-none 2xl:max-w-7xl">
         {/* Title Section */}
         <div className="mb-12">
-          <h2 className="text-4xl font-bold tracking-wide font-marcellus">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wide font-marcellus">
             {line1}
           </h2>
-          <h3 className="text-3xl text-gray-400 tracking-wide mt-1 font-marcellus">
+          <h3 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-gray-400 tracking-wide mt-1 font-marcellus">
             {line2}
           </h3>
         </div>
@@ -233,8 +235,10 @@ const ContactPage: React.FC = () => {
         {/* Info Box Section */}
         <div className="space-y-6 border-t border-gray-700 pt-6 font-outfit">
           <div className="flex justify-between border-b border-gray-700 pb-3">
-            <span className="uppercase text-sm">OUR OFFICE</span>
-            <span className="text-xs opacity-70 text-right">
+            <span className="uppercase text-sm md:text-base lg:text-lg">
+              OUR OFFICE
+            </span>
+            <span className="text-xs md:text-sm lg:text-base opacity-70 text-right">
               7901 4th Street, Saint Petersburg, FL, United States, Florida
             </span>
           </div>
@@ -251,77 +255,106 @@ const ContactPage: React.FC = () => {
         </div>
 
         <div className="mt-12 font-outfit">
-          <ul className="uppercase text-[0.65rem] text-white mb-2 list-disc marker:text-lime-400 marker:text-xl ml-4">
+          <ul className="uppercase text-[0.65rem] md:text-xs lg:text-sm text-white mb-2">
             <li>
               At The Root Digital, We Value <br /> Communication And
               Transparency. By <br /> Reaching Out, You Can:
             </li>
           </ul>
-          <input 
+          <input
             placeholder="info@therootsdigital.com"
-            className="w-full bg-[#1a1a1a] px-4 py-2 text-sm text-gray-300"
+            className="w-full bg-[#1a1a1a] px-4 py-2 text-sm md:text-base lg:text-lg"
             readOnly
           />
         </div>
 
         {/* FORM */}
-        <form onSubmit={handleSubmit} className="mt-16 pb-20 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-10">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-16 pb-20 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10"
+        >
           {/* 4 Input Fields */}
           <div className="col-span-1">
-            <label className={`text-xs uppercase block mb-1 font-marcellus transition-colors ${errors.name ? 'text-red-500' : ''}`}>
-              Your Name {errors.name && <span className="text-red-500">*Required</span>}
+            <label
+              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.name ? "text-red-500" : ""}`}
+            >
+              Your Name{" "}
+              {errors.name && <span className="text-red-500">*Required</span>}
             </label>
-            <input 
+            <input
               ref={nameRef}
-              onChange={() => handleInputChange('name')}
-              className={`w-full bg-transparent border-b ${errors.name ? 'border-red-500' : 'border-gray-600'} text-sm py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.name ? 'text-red-500 placeholder-red-500/50' : ''}`}
+              onChange={() => handleInputChange("name")}
+              className={`w-full bg-transparent border-b ${errors.name ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.name ? "text-red-500 placeholder-red-500/50" : ""}`}
               placeholder="Gomez Galatria"
             />
           </div>
 
           <div className="col-span-1">
-            <label className={`text-xs uppercase block mb-1 font-marcellus transition-colors ${errors.email ? 'text-red-500' : ''}`}>
-              Email {errors.email && <span className="text-red-500">*Required</span>}
+            <label
+              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.email ? "text-red-500" : ""}`}
+            >
+              Email{" "}
+              {errors.email && <span className="text-red-500">*Required</span>}
             </label>
             <input
               ref={emailRef}
               type="email"
-              onChange={() => handleInputChange('email')}
-              className={`w-full bg-transparent border-b ${errors.email ? 'border-red-500' : 'border-gray-600'} text-sm py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.email ? 'text-red-500 placeholder-red-500/50' : ''}`}
+              onChange={() => handleInputChange("email")}
+              className={`w-full bg-transparent border-b ${errors.email ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.email ? "text-red-500 placeholder-red-500/50" : ""}`}
               placeholder="gomez@example.com"
             />
           </div>
 
           <div className="col-span-1">
-            <label className={`text-xs uppercase block mb-1 font-marcellus transition-colors ${errors.skype ? 'text-red-500' : ''}`}>
-              Skype/Phone {errors.skype && <span className="text-red-500">*Required</span>}
+            <label
+              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.skype ? "text-red-500" : ""}`}
+            >
+              Skype/Phone{" "}
+              {errors.skype && <span className="text-red-500">*Required</span>}
             </label>
             <input
               ref={skypeRef}
               type="tel"
-              onChange={() => handleInputChange('skype')}
-              className={`w-full bg-transparent border-b ${errors.skype ? 'border-red-500' : 'border-gray-600'} text-sm py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.skype ? 'text-red-500 placeholder-red-500/50' : ''}`}
+              onChange={() => handleInputChange("skype")}
+              className={`w-full bg-transparent border-b ${errors.skype ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.skype ? "text-red-500 placeholder-red-500/50" : ""}`}
               placeholder="+1 800 123 456 789"
             />
           </div>
 
           <div className="col-span-1">
-            <label className={`text-xs uppercase block mb-1 font-marcellus transition-colors ${errors.company ? 'text-red-500' : ''}`}>
-              Company {errors.company && <span className="text-red-500">*Required</span>}
+            <label
+              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.company ? "text-red-500" : ""}`}
+            >
+              Company{" "}
+              {errors.company && (
+                <span className="text-red-500">*Required</span>
+              )}
             </label>
             <input
               ref={companyRef}
-              onChange={() => handleInputChange('company')}
-              className={`w-full bg-transparent border-b ${errors.company ? 'border-red-500' : 'border-gray-600'} text-sm py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.company ? 'text-red-500 placeholder-red-500/50' : ''}`}
+              onChange={() => handleInputChange("company")}
+              className={`w-full bg-transparent border-b ${errors.company ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.company ? "text-red-500 placeholder-red-500/50" : ""}`}
               placeholder="XpressBuddy Digital Solutions"
             />
           </div>
 
           {/* MESSAGE + BUTTON */}
-          <div className="col-start-2 ml-[-120px] md:ml-[-180px] lg:ml-[-220px] xl:ml-[-240px] mt-24 relative">
+          <div
+            className="col-span-1
+            md:col-span-2
+            2xl:col-span-1
+            mt-24
+            relative
+            2xl:pl-16"
+          >
             {/* LABEL */}
-            <label className={`text-xs uppercase mb-4 block font-marcellus transition-colors ${errors.message ? 'text-red-500' : ''}`}>
-              Your Message {errors.message && <span className="text-red-500">*Required</span>}
+            <label
+              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.message ? "text-red-500" : ""}`}
+            >
+              Your Message{" "}
+              {errors.message && (
+                <span className="text-red-500">*Required</span>
+              )}
             </label>
 
             {/* MESSAGE AREA */}
@@ -329,17 +362,24 @@ const ContactPage: React.FC = () => {
               {/* TEXT */}
               <textarea
                 ref={messageRef}
-                onChange={() => handleInputChange('message')}
-                className={`w-full bg-transparent text-sm focus:outline-none resize-none transition-colors ${errors.message ? 'text-red-500 placeholder-red-500/50' : 'text-gray-300'}`}
+                onChange={() => handleInputChange("message")}
+                className={`w-full bg-transparent text-sm md:text-base lg:text-lg focus:outline-none resize-none ${errors.message ? "text-red-500 placeholder-red-500/50" : "text-gray-300"}`}
                 rows={4}
                 placeholder="Hello Dennis, can you help me with..."
               />
 
               {/* FULL WIDTH LINE */}
-              <div className={`absolute left-0 right-0 bottom-6 h-px transition-colors ${errors.message ? 'bg-red-500' : 'bg-gray-600'}`} />
+              <div
+                className={`absolute left-0 right-0 bottom-6 h-px transition-colors ${errors.message ? "bg-red-500" : "bg-gray-600"}`}
+              />
 
               {/* SEND BUTTON */}
-              <div className="absolute right-0 bottom-6 translate-y-1/2">
+              <div className=" absolute
+    right-6
+    md:right-12
+    2xl:right-0
+    bottom-6
+    translate-y-1/2">
                 <div
                   ref={wrapperRef}
                   onMouseMove={handleMouseMove}
@@ -370,8 +410,8 @@ const ContactPage: React.FC = () => {
                     />
 
                     {/* Main Button */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-lime-400 via-lime-500 to-lime-600 flex items-center justify-center shadow-2xl shadow-lime-400/30 group-hover:shadow-lime-400/60 transition-all duration-500">
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-white/10 to-white/20" />
+                    <div className="absolute inset-0 rounded-full bg-linear-to-br from-lime-400 via-lime-500 to-lime-600 flex items-center justify-center shadow-2xl shadow-lime-400/30 group-hover:shadow-lime-400/60 transition-all duration-500">
+                      <div className="absolute inset-0 rounded-full bg-linear-to-t from-transparent via-white/10 to-white/20" />
 
                       <span className="relative text-xl lg:text-2xl font-black text-black tracking-wider">
                         SEND
