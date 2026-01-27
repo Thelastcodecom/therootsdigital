@@ -330,7 +330,7 @@ const SuccessStories: React.FC = () => {
         </div>
 
         {/* FAQ SECTION */}
-        <div className="max-w-7xl 2xl:max-w-[1920px] mx-auto px-6 lg:px-20">
+        <div className="max-w-7xl  mx-auto px-6 lg:px-20">
           <div className="flex flex-col lg:flex-row gap-20 mb-40 items-start lg:items-center">
             <div className="lg:w-1/2 flex flex-col justify-center">
               <h3 className="text-white text-4xl font-bold leading-tight mb-8 max-w-md">
