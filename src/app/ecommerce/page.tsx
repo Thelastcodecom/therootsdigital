@@ -4,6 +4,7 @@ import ServicesWeOfferSection from '@/components/Ecommerce/ServicesWeOffer'
 import RealBrandsSection from '@/components/Ecommerce/RealBrandsSection'
 import DevelopmentProcess from '@/components/Ecommerce/DevelopmentProcess'
 import EcommerceProcess from '@/components/Ecommerce/EcommerceProcess'
+import SuccessStories from '@/components/Ecommerce/SuccessStories'
 
 export default function page() {
   return (
@@ -13,6 +14,7 @@ export default function page() {
     <RealBrandsSection />
     <DevelopmentProcess />
     <EcommerceProcess />
+    <SuccessStories/>
     </>
   )
 }

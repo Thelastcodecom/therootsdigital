@@ -229,7 +229,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white font-sans antialiased pb-12">
+    <div className="min-h-screen bg-[#0A0A0A] text-white font-sans antialiased pb-12 mt-25">
       <main className="max-w-[1600px] mx-auto p-8 pt-12">
         <div className="mb-10">
           <h1 className="text-3xl font-black text-white tracking-tight uppercase">
