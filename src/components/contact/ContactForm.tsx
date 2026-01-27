@@ -1,38 +1,15 @@
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 // ArrowUpRight SVG equivalent (functional component with props)
-interface ArrowUpRightProps {
-  className?: string;
-}
 
-const ArrowUpRight: React.FC<ArrowUpRightProps> = ({
-  className = "w-5 h-5",
-}) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="7" y1="17" x2="17" y2="7"></line>
-    <polyline points="7 7 17 7 17 17"></polyline>
-  </svg>
-);
+
+
 
 const ContactPage: React.FC = () => {
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0,
-  });
 
   const text1 = "WE CREATE DIGITAL";
   const text2 = "SOLUTIONS";
@@ -68,38 +45,9 @@ const ContactPage: React.FC = () => {
     };
   }, [text1, text2]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const wrapper = wrapperRef.current;
 
-    if (!wrapper) return;
 
-    const clientX = e.clientX;
-    const clientY = e.clientY;
 
-    const MAGNET_STRENGTH = 0.3;
-    const MAX_DISTANCE = 20;
-
-    const { left, top, width, height } = wrapper.getBoundingClientRect();
-    const center_x = left + width / 2;
-    const center_y = top + height / 2;
-    const distance_x = clientX - center_x;
-    const distance_y = clientY - center_y;
-
-    const move_x = Math.max(
-      -MAX_DISTANCE,
-      Math.min(MAX_DISTANCE, distance_x * MAGNET_STRENGTH),
-    );
-    const move_y = Math.max(
-      -MAX_DISTANCE,
-      Math.min(MAX_DISTANCE, distance_y * MAGNET_STRENGTH),
-    );
-
-    setTransform({ x: move_x, y: move_y });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setTransform({ x: 0, y: 0 });
-  }, []);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -270,161 +218,130 @@ const ContactPage: React.FC = () => {
 
         {/* FORM */}
         <form
-          onSubmit={handleSubmit}
-          className="mt-16 pb-20 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10"
-        >
-          {/* 4 Input Fields */}
-          <div className="col-span-1">
-            <label
-              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.name ? "text-red-500" : ""}`}
-            >
-              Your Name{" "}
-              {errors.name && <span className="text-red-500">*Required</span>}
-            </label>
-            <input
-              ref={nameRef}
-              onChange={() => handleInputChange("name")}
-              className={`w-full bg-transparent border-b ${errors.name ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.name ? "text-red-500 placeholder-red-500/50" : ""}`}
-              placeholder="Gomez Galatria"
-            />
-          </div>
+  onSubmit={handleSubmit}
+  className="
+  mt-20 mb-20
+  w-full
+  max-w-5xl    /* increase max width */
+  mx-auto
+  bg-[#0f0f0f]
+  border border-white/10
+  rounded-2xl
+  p-8 md:p-12
+  shadow-2xl
+  "
+>
+  {/* Form Header */}
+  <div className="mb-10 text-center">
+    <h3 className="text-2xl md:text-3xl font-marcellus">
+      Start a Conversation
+    </h3>
+    <p className="text-sm md:text-base text-gray-400 mt-2 font-outfit">
+      Tell us about your project and we’ll get back to you within 24 hours.
+    </p>
+  </div>
 
-          <div className="col-span-1">
-            <label
-              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.email ? "text-red-500" : ""}`}
-            >
-              Email{" "}
-              {errors.email && <span className="text-red-500">*Required</span>}
-            </label>
-            <input
-              ref={emailRef}
-              type="email"
-              onChange={() => handleInputChange("email")}
-              className={`w-full bg-transparent border-b ${errors.email ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.email ? "text-red-500 placeholder-red-500/50" : ""}`}
-              placeholder="gomez@example.com"
-            />
-          </div>
+  {/* Inputs Grid */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Name */}
+    <div>
+      <label className="block text-sm font-outfit mb-2">
+        Full Name
+      </label>
+      <input
+        ref={nameRef}
+        onChange={() => handleInputChange("name")}
+        className={`w-full rounded-lg bg-black border px-4 py-3 text-base
+          ${errors.name ? "border-red-500" : "border-white/10"}
+          focus:outline-none focus:border-lime-400`}
+        placeholder="John Doe"
+      />
+    </div>
 
-          <div className="col-span-1">
-            <label
-              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.skype ? "text-red-500" : ""}`}
-            >
-              Skype/Phone{" "}
-              {errors.skype && <span className="text-red-500">*Required</span>}
-            </label>
-            <input
-              ref={skypeRef}
-              type="tel"
-              onChange={() => handleInputChange("skype")}
-              className={`w-full bg-transparent border-b ${errors.skype ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.skype ? "text-red-500 placeholder-red-500/50" : ""}`}
-              placeholder="+1 800 123 456 789"
-            />
-          </div>
+    {/* Email */}
+    <div>
+      <label className="block text-sm font-outfit mb-2">
+        Email Address
+      </label>
+      <input
+        ref={emailRef}
+        type="email"
+        onChange={() => handleInputChange("email")}
+        className={`w-full rounded-lg bg-black border px-4 py-3 text-base
+          ${errors.email ? "border-red-500" : "border-white/10"}
+          focus:outline-none focus:border-lime-400`}
+        placeholder="john@example.com"
+      />
+    </div>
 
-          <div className="col-span-1">
-            <label
-              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.company ? "text-red-500" : ""}`}
-            >
-              Company{" "}
-              {errors.company && (
-                <span className="text-red-500">*Required</span>
-              )}
-            </label>
-            <input
-              ref={companyRef}
-              onChange={() => handleInputChange("company")}
-              className={`w-full bg-transparent border-b ${errors.company ? "border-red-500" : "border-gray-600"}  text-sm md:text-base lg:text-lg py-1 focus:border-lime-400 focus:outline-none transition-colors ${errors.company ? "text-red-500 placeholder-red-500/50" : ""}`}
-              placeholder="XpressBuddy Digital Solutions"
-            />
-          </div>
+    {/* Phone */}
+    <div>
+      <label className="block text-sm font-outfit mb-2">
+        Phone / Skype
+      </label>
+      <input
+        ref={skypeRef}
+        onChange={() => handleInputChange("skype")}
+        className={`w-full rounded-lg bg-black border px-4 py-3 text-base
+          ${errors.skype ? "border-red-500" : "border-white/10"}
+          focus:outline-none focus:border-lime-400`}
+        placeholder="+1 800 123 456"
+      />
+    </div>
 
-          {/* MESSAGE + BUTTON */}
-          <div
-            className="col-span-1
-            md:col-span-2
-            2xl:col-span-1
-            mt-24
-            relative
-            2xl:pl-16"
-          >
-            {/* LABEL */}
-            <label
-              className={`text-xs md:text-sm lg:text-base uppercase block mb-1 font-marcellus ${errors.message ? "text-red-500" : ""}`}
-            >
-              Your Message{" "}
-              {errors.message && (
-                <span className="text-red-500">*Required</span>
-              )}
-            </label>
+    {/* Company */}
+    <div>
+      <label className="block text-sm font-outfit mb-2">
+        Company
+      </label>
+      <input
+        ref={companyRef}
+        onChange={() => handleInputChange("company")}
+        className={`w-full rounded-lg bg-black border px-4 py-3 text-base
+          ${errors.company ? "border-red-500" : "border-white/10"}
+          focus:outline-none focus:border-lime-400`}
+        placeholder="Acme Inc."
+      />
+    </div>
+  </div>
 
-            {/* MESSAGE AREA */}
-            <div className="relative min-h-[180px]">
-              {/* TEXT */}
-              <textarea
-                ref={messageRef}
-                onChange={() => handleInputChange("message")}
-                className={`w-full bg-transparent text-sm md:text-base lg:text-lg focus:outline-none resize-none ${errors.message ? "text-red-500 placeholder-red-500/50" : "text-gray-300"}`}
-                rows={4}
-                placeholder="Hello Dennis, can you help me with..."
-              />
+  {/* Message */}
+  <div className="mt-8">
+    <label className="block text-sm font-outfit mb-2">
+      Message
+    </label>
+    <textarea
+      ref={messageRef}
+      onChange={() => handleInputChange("message")}
+      rows={5}
+      className={`w-full rounded-lg bg-black border px-4 py-3 text-base resize-none
+        ${errors.message ? "border-red-500" : "border-white/10"}
+        focus:outline-none focus:border-lime-400`}
+      placeholder="Tell us about your project, goals, and timeline..."
+    />
+  </div>
 
-              {/* FULL WIDTH LINE */}
-              <div
-                className={`absolute left-0 right-0 bottom-6 h-px transition-colors ${errors.message ? "bg-red-500" : "bg-gray-600"}`}
-              />
+  {/* CTA */}
+  <div className="mt-12 flex justify-center">
+    <button
+      type="submit"
+      className="
+        relative
+        rounded-full
+        px-12 py-5
+        bg-lime-400
+        text-black
+        font-bold
+        tracking-wide
+        hover:scale-105
+        transition-transform
+      "
+    >
+      Send Message
+    </button>
+  </div>
+</form>
 
-              {/* SEND BUTTON */}
-              <div className=" absolute
-    right-6
-    md:right-12
-    2xl:right-0
-    bottom-6
-    translate-y-1/2">
-                <div
-                  ref={wrapperRef}
-                  onMouseMove={handleMouseMove}
-                  onMouseLeave={handleMouseLeave}
-                  style={{ willChange: "transform" }}
-                >
-                  <button
-                    type="submit"
-                    style={{
-                      transform: `translate(${transform.x}px, ${transform.y}px)`,
-                      transition:
-                        "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                    }}
-                    className="relative rounded-full w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 bg-lime-400 flex items-center justify-center group"
-                  >
-                    {/* Outer Glow Ring */}
-                    <div className="absolute -inset-2 rounded-full bg-lime-400/20 blur-xl group-hover:bg-lime-400/40 transition-all duration-500" />
-
-                    {/* Rotating Border */}
-                    <div className="absolute -inset-1 rounded-full border-2 border-dashed border-lime-400/30 group-hover:border-lime-400/60 animate-spin-slow" />
-
-                    {/* Pulse Rings */}
-                    <div className="absolute -inset-2 rounded-full border-2 border-lime-400/50 animate-ping-slow" />
-
-                    <div
-                      className="absolute -inset-2 rounded-full border-2 border-lime-400/30 animate-ping-slow"
-                      style={{ animationDelay: "0.5s" }}
-                    />
-
-                    {/* Main Button */}
-                    <div className="absolute inset-0 rounded-full bg-linear-to-br from-lime-400 via-lime-500 to-lime-600 flex items-center justify-center shadow-2xl shadow-lime-400/30 group-hover:shadow-lime-400/60 transition-all duration-500">
-                      <div className="absolute inset-0 rounded-full bg-linear-to-t from-transparent via-white/10 to-white/20" />
-
-                      <span className="relative text-xl lg:text-2xl font-black text-black tracking-wider">
-                        SEND
-                      </span>
-
-                      <ArrowUpRight className="relative w-6 h-6 text-black mt-1 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
   );
