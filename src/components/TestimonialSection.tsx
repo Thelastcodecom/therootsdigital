@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 interface Testimonial {
@@ -117,14 +117,14 @@ const TestimonialSection: React.FC = () => {
   ];
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [isTransitioning, setIsTransitioning] = useState<boolean>(true);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const cardWidth = 272;
 
   const extendedIndex = activeIndex + cloneCount;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updateWidth = () => {
       if (sliderRef.current) setContainerWidth(sliderRef.current.offsetWidth);
     };

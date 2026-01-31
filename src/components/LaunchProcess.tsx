@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
+import Image from "next/image";
 
 // --- Step Data Type ---
 interface StepData {
@@ -41,21 +42,21 @@ const stepsData: StepData[] = [
 
 // --- Logo Data Type ---
 interface LogoData {
-  name: string;
-  color: string;
+  url: string;
+  alt?: string;
 }
 
 const mockLogos: LogoData[] = [
-  { name: "ONE STOP HOME REPAIRS", color: "#000000" },
-  { name: "MY FINANCIAL", color: "#000000" },
-  { name: "GREEN ORCHARDS", color: "#000000" },
-  { name: "LAXIOM", color: "#000000" },
-  { name: "DLC BOOKING", color: "#000000" },
-  { name: "AXIOM", color: "#000000" },
-  { name: "VINDEMIATRIX FILTER", color: "#000000" },
-  { name: "MY FINANCIAL", color: "#000000" },
-  { name: "GREEN ORCHARDS", color: "#000000" },
-  { name: "ONE STOP HOME REPAIRS", color: "#000000" },
+  { url: "/images/marquee-logo/1.webp", alt: "Logo 1" },
+  { url: "/images/marquee-logo/2-1.webp", alt: "Logo 2" },
+  { url: "/images/marquee-logo/2-2.webp", alt: "Logo 3" },
+  { url: "/images/marquee-logo/2-3.webp", alt: "Logo 4" },
+  { url: "/images/marquee-logo/2-4.webp", alt: "Logo 5" },
+  { url: "/images/marquee-logo/2-5.webp", alt: "Logo 6" },
+  { url: "/images/marquee-logo/2-6.webp", alt: "Logo 7" },
+  { url: "/images/marquee-logo/3.webp", alt: "Logo 8" },
+  { url: "/images/marquee-logo/4.webp", alt: "Logo 9" },
+  { url: "/images/marquee-logo/5.webp", alt: "Logo 10" },
 ];
 
 // --- LogoCard Props ---
@@ -65,25 +66,22 @@ interface LogoCardProps {
 }
 
 const LogoCard: React.FC<LogoCardProps> = ({ logo, isLimeBanner }) => (
-  <div className="shrink-0 min-w-[200px] mx-6 flex flex-col items-center justify-center text-center">
+  <div className="shrink-0 min-w-[220px] mx-6 flex items-center justify-center">
     <div
-      className="w-10 h-10 rounded-full border-2 mb-2 flex items-center justify-center"
-      style={{
-        backgroundColor: isLimeBanner ? "#c4ef17" : "#ffffff",
-        color: "#000000",
-        borderColor: "#000000",
-      }}
+      className={`w-[200px] h-[72px] flex items-center justify-center rounded-md p-2 transition-transform duration-300 ${
+        isLimeBanner ? "bg-white/5" : "bg-white/10"
+      } `}
     >
-      <span className="font-bold text-lg uppercase text-black">
-        {logo.name[0]}
-      </span>
+      <Image
+        src={logo.url}
+        alt={logo.alt || "logo"}
+        width={180}
+        height={64}
+        quality={90}
+        className="object-contain"
+        priority={false}
+      />
     </div>
-    <p className="text-[10px] font-semibold uppercase text-black whitespace-nowrap">
-      {logo.name}
-    </p>
-    <p className="text-[8px] text-black whitespace-nowrap">
-      Partner Since &apos;23
-    </p>
   </div>
 );
 
@@ -102,13 +100,23 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({
   const animationName = direction === "left" ? "marqueeLeft" : "marqueeRight";
   const duration = direction === "left" ? "35s" : "40s";
 
+  // pick 6 random logos for this band (stable per-mount)
+  const selectedLogos = useMemo(() => {
+    const arr = [...mockLogos];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr.slice(0, 6);
+  }, []);
+
   return (
     <div
       className="
   w-[200vw]
-  h-[100px]
-  md:h-[100px]
-  xl:h-[130px]
+  h-[120px]
+  md:h-[140px]
+  xl:h-40
   py-2
   shadow-lg
   overflow-hidden
@@ -152,14 +160,14 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({
           animation: `${animationName} ${duration} linear infinite`,
         }}
       >
-        {[...mockLogos, ...mockLogos, ...mockLogos, ...mockLogos].map(
-          (logo, index) => (
+        {Array.from({ length: 4 }).flatMap((_, groupIndex) =>
+          selectedLogos.map((logo, i) => (
             <LogoCard
-              key={`logo-${index}`}
+              key={`logo-${groupIndex}-${i}`}
               logo={logo}
               isLimeBanner={isLimeBanner}
             />
-          )
+          ))
         )}
       </div>
     </div>

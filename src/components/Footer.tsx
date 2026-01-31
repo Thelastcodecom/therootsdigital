@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useRef } from "react";
 
 // --- Icon Definitions ---
@@ -198,8 +199,8 @@ const Footer: React.FC = () => {
           }}
         >
           {/* Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
+          <div className="absolute inset-0 bg-linear-to-t from-black via-black/80 to-black/60" />
+          <div className="absolute inset-0 bg-linear-to-r from-black/40 via-transparent to-black/40" />
 
           {/* Seamless blend overlay for repeated images */}
           <div
@@ -239,9 +240,9 @@ const Footer: React.FC = () => {
                   />
 
                   {/* Main Button */}
-                  <div className="absolute inset-4 rounded-full bg-gradient-to-br from-lime-400 via-lime-500 to-lime-600 flex flex-col items-center justify-center shadow-2xl shadow-lime-400/30 group-hover:shadow-lime-400/60 transition-all duration-500">
+                  <div className="absolute inset-4 rounded-full bg-linear-to-br from-lime-400 via-lime-500 to-lime-600 flex flex-col items-center justify-center shadow-2xl shadow-lime-400/30 group-hover:shadow-lime-400/60 transition-all duration-500">
                     {/* Inner Highlight */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent via-white/10 to-white/20" />
+                    <div className="absolute inset-0 rounded-full bg-linear-to-t from-transparent via-white/10 to-white/20" />
 
                     {/* Text */}
                     <span className="relative text-xl md:text-xl lg:text-2xl xl:text-3xl font-black text-black tracking-wider">
@@ -333,12 +334,7 @@ const Footer: React.FC = () => {
                   href="#"
                   className="inline-block group text-center md:text-left"
                 >
-                  <span className="text-3xl md:text-4xl font-black tracking-tight text-white">
-                    the roots{" "}
-                    <span className="text-lime-400 group-hover:text-lime-300 transition-colors">
-                      digital.
-                    </span>
-                  </span>
+                  <img src="/images/footer/green-eyebrow.png" className="w-100" alt="Logo"/>
                 </a>
                 <p className="text-gray-500 text-sm mt-3 md:mt-0 max-w-xs">
                   Crafting digital excellence for businesses worldwide since
@@ -352,14 +348,14 @@ const Footer: React.FC = () => {
                   <img
                     src="/images/footer/google.webp"
                     alt="Google Partner"
-                    className="w-40 h-15"
+                    className="max-w-40"
                   />
                 </div>
                 <div className="flex py-2">
                   <img
                     src="/images/footer/trustpilot.webp"
                     alt="Trustpilot"
-                    className="w-40 h-15"
+                    className="max-w-40 "
                   />
                 </div>
               </div>

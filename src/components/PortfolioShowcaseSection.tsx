@@ -160,7 +160,7 @@ export default function PortfolioGrid() {
         </motion.h2>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-16 md:max-w-4xl xl:max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-3 mb-16 md:max-w-2xl xl:max-w-3xl mx-auto">
           {categories.map((category) => (
             <button
               key={category}
