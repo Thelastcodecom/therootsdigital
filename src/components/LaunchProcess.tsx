@@ -114,9 +114,9 @@ const MarqueeBand: React.FC<MarqueeBandProps> = ({
     <div
       className="
   w-[200vw]
-  h-[120px]
-  md:h-[140px]
-  xl:h-40
+  h-20
+  md:h-[100px]
+  xl:h-30
   py-2
   shadow-lg
   overflow-hidden
@@ -237,7 +237,9 @@ const LaunchProcessAndMarquee: React.FC = () => {
                 }}
               >
                 <div className="w-full h-40 mb-6 bg-gray-800 rounded-lg overflow-hidden">
-                  <img
+                  <Image
+                  height={600}
+                  width={390}
                     src={step.image}
                     alt={`Step ${step.step} preview`}
                     className="

@@ -74,6 +74,26 @@ export default function PortfolioGrid() {
         type: "video",
         src: "/images/portfolio-images/video-editing/video 3.mp4",
       },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 4.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 5.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 6.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 7.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-editing/video 8.mp4",
+      },
     ],
     "Video Animation": [
       {
@@ -87,6 +107,26 @@ export default function PortfolioGrid() {
       {
         type: "video",
         src: "/images/portfolio-images/video-animation/animation 3.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-animation/animation 4.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-animation/animation 5.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-animation/animation 6.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-animation/animation 7.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/video-animation/animation 8.mp4",
       },
     ],
     Branding: [
@@ -102,20 +142,53 @@ export default function PortfolioGrid() {
         type: "video",
         src: "/images/portfolio-images/branding/branding 3.mp4",
       },
+      {
+        type: "video",
+        src: "/images/portfolio-images/branding/branding 4.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/branding/branding 5.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/branding/branding 6.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/branding/branding 7.mp4",
+      },
+      {
+        type: "video",
+        src: "/images/portfolio-images/branding/branding 8.mp4",
+      },
     ],
     "UI/UX Design": [
       { type: "image", src: "/images/portfolio-images/ui/ui 1.webp" },
       { type: "image", src: "/images/portfolio-images/ui/ui 2.webp" },
       { type: "image", src: "/images/portfolio-images/ui/ui 3.webp" },
       { type: "image", src: "/images/portfolio-images/ui/ui 4.webp" },
+      { type: "image", src: "/images/portfolio-images/ui/ui 5.png" },
+      { type: "image", src: "/images/portfolio-images/ui/ui 6.png" },
+      { type: "image", src: "/images/portfolio-images/ui/ui 7.jpeg" },
+      { type: "image", src: "/images/portfolio-images/ui/ui 8.jpg" },
     ],
     "Logo Design": [
       { type: "image", src: "/images/portfolio-images/logo/logo 1.webp" },
       { type: "image", src: "/images/portfolio-images/logo/logo 2.webp" },
       { type: "image", src: "/images/portfolio-images/logo/logo 3.webp" },
       { type: "image", src: "/images/portfolio-images/logo/logo 4.webp" },
+      { type: "image", src: "/images/portfolio-images/logo/logo 5.jpg" },
+      { type: "image", src: "/images/portfolio-images/logo/logo 6.jpg" },
+      { type: "image", src: "/images/portfolio-images/logo/logo 7.jpg" },
+      { type: "image", src: "/images/portfolio-images/logo/logo 8.jpg" },
     ],
     "Social Media Management": [
+      { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
+      { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
+      { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
+      { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
+      { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
       { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
       { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
       { type: "image", src: "/images/portfolio-images/social/social 1.webp" },
@@ -124,13 +197,21 @@ export default function PortfolioGrid() {
       { type: "image", src: "/images/portfolio-images/app/app 1.webp" },
       { type: "image", src: "/images/portfolio-images/app/app 2.webp" },
       { type: "image", src: "/images/portfolio-images/app/app 3.webp" },
-      { type: "image", src: "/images/portfolio-images/app/app 4.webp" },
+      { type: "image", src: "/images/portfolio-images/app/app 4.png" },
+      { type: "image", src: "/images/portfolio-images/app/app 5.png" },
+      { type: "image", src: "/images/portfolio-images/app/app 6.png" },
+      { type: "image", src: "/images/portfolio-images/app/app 7.png" },
+      { type: "image", src: "/images/portfolio-images/app/app 8.png" },
     ],
     SEO: [
       { type: "image", src: "/images/portfolio-images/seo/seo 1.webp" },
       { type: "image", src: "/images/portfolio-images/seo/seo 2.webp" },
       { type: "image", src: "/images/portfolio-images/seo/seo 3.webp" },
       { type: "image", src: "/images/portfolio-images/seo/seo 4.webp" },
+      { type: "image", src: "/images/portfolio-images/seo/seo 5.png" },
+      { type: "image", src: "/images/portfolio-images/seo/seo 6.png" },
+      { type: "image", src: "/images/portfolio-images/seo/seo 7.png" },
+      { type: "image", src: "/images/portfolio-images/seo/seo 8.jfif" },
     ],
   };
 
@@ -223,7 +304,10 @@ function PortfolioCard({
   index: number;
 }) {
   const isTall =
-    category === "Web Design" || category === "Social Media Management";
+    category === "Web Design" ||
+    category === "Social Media Management" ||
+    category === "SEO";
+  const isLogo = category === "Logo Design";
 
   return (
     <div
@@ -247,10 +331,14 @@ function PortfolioCard({
           <img
             src={item.src}
             alt={`${category} Project ${index + 1}`}
-            className={`w-full object-cover object-top transition-transform duration-[5s] ease-linear ${
-              isTall
-                ? "h-auto group-hover:-translate-y-[calc(100%-400px)] md:group-hover:-translate-y-[calc(100%-550px)]"
-                : "h-full group-hover:scale-105"
+            className={`w-full transition-transform duration-[5s] ease-linear ${
+              isLogo
+                ? "h-full object-cover object-center"
+                : `object-cover object-top ${
+                    isTall
+                      ? "h-auto group-hover:-translate-y-[calc(100%-400px)] md:group-hover:-translate-y-[calc(100%-550px)]"
+                      : "h-full group-hover:scale-105"
+                  }`
             }`}
           />
         )}

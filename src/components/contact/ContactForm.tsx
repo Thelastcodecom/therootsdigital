@@ -1,10 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 
-// ArrowUpRight SVG equivalent (functional component with props)
-
-
-
 
 const ContactPage: React.FC = () => {
   const [line1, setLine1] = useState("");
